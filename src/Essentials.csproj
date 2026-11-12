@@ -11,7 +11,8 @@
     <PathMap>$(MSBuildProjectDirectory)=.</PathMap>
   </PropertyGroup>
 
-  <!-- A test build serves the scripts from a local folder instead of jsDelivr: dotnet build -p:LocalScripts=<folder>. -->
+  <!-- For testing: dotnet build -p:LocalScripts=<folder> serves each script from <folder>\<repository>\<file> (clones of the
+       script repositories) instead of jsDelivr. The folder path is stored in the DLL, so such a build is never released. -->
   <PropertyGroup Condition="'$(LocalScripts)' != ''">
     <DefineConstants>$(DefineConstants);LOCAL_SCRIPTS</DefineConstants>
   </PropertyGroup>
@@ -51,7 +52,7 @@
     <EmbeddedResource Include="Configuration\configPage.html" />
     <EmbeddedResource Include="Web\essentials.js" LogicalName="essentials.js" />
     <!-- Plugin logo (meta.json imagePath), shown by Jellyfin's plugin pages. -->
-    <Content Include="logo.png" Condition="Exists('logo.png')">
+    <Content Include="logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

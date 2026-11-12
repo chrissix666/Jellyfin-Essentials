@@ -101,33 +101,4 @@ public static class IndexHtml
 
         return contents.Insert(body, ScriptTags);
     }
-
-    /// <summary>
-    /// What every page may know before sign-in: which scripts run and the order of the header buttons. Settings of the
-    /// scripts (some hold keys) come later from the signed-in endpoint.
-    /// </summary>
-    internal static string PageSettings()
-    {
-        var config = Plugin.Instance?.Configuration ?? new Configuration.PluginConfiguration();
-        var enabled = Parts.All.Where(p => config.EnabledParts.Contains(p.Key)).ToList();
-        return JsonSerializer.Serialize(new
-        {
-            parts = enabled.Select(p => new { key = p.Key, url = Parts.ScriptUrl(p) + HourMark() }),
-            headerOrder = HeaderOrder(config)
-        });
-    }
-
-    // A browser may keep a jsDelivr script for 7 days; the hour (UTC) in the address makes it ask again at most once an
-    // hour, so a pushed script arrives within about an hour (jsDelivr's own cache permitting).
-    private static string HourMark() => "?h=" + DateTime.UtcNow.ToString("yyyyMMddHH", System.Globalization.CultureInfo.InvariantCulture);
-
-    /// <summary>The element ids of the header buttons in the chosen order; buttons it does not name come last.</summary>
-    internal static string[] HeaderOrder(Configuration.PluginConfiguration config) =>
-        config.HeaderOrder
-            .Concat(Parts.HeaderButtons.Select(b => b.Key))
-            .Distinct()
-            .Select(key => Parts.HeaderButtons.FirstOrDefault(b => b.Key == key))
-            .OfType<HeaderButton>()
-            .Select(b => b.ElementId)
-            .ToArray();
 }

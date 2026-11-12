@@ -1,16 +1,19 @@
 namespace Jellyfin.Plugin.Essentials;
 
-/// <summary>A script of the plugin: where it lives on GitHub.</summary>
-public sealed record Part(string Key, string Repository, string File);
+/// <summary>A script of the plugin and where it lives on GitHub.</summary>
+public sealed record Script(string Key, string Repository, string File);
 
-/// <summary>A button in Jellyfin's header and its element id; Globe, Cinema Project and Destroy bring their own.</summary>
+/// <summary>
+/// A button in Jellyfin's header, by its element id. Globe, Cinema Project and Destroy add their own buttons; Essentials
+/// only orders them.
+/// </summary>
 public sealed record HeaderButton(string Key, string ElementId);
 
-public static class Parts
+public static class Scripts
 {
     public const string GitHubUser = "chrissix666";
 
-    public static readonly Part[] All =
+    public static readonly Script[] All =
     {
         new("random", "Jellyfin-Random-Button-Extended", "Jellyfin-Random-Button-v3+automode+tripleclicktimer.js"),
         new("autoscroll", "Jellyfin-Autoscroll-Button", "Jellyfin-Autoscroll-Button-v1.js"),
@@ -33,12 +36,12 @@ public static class Parts
     };
 
     /// <summary>The address the browser loads a script from: jsDelivr, or in a test build the plugin itself.</summary>
-    public static string ScriptUrl(Part part)
+    public static string Url(Script script)
     {
 #if LOCAL_SCRIPTS
-        return "../Essentials/local/" + part.Key + ".js";
+        return "../Essentials/local/" + script.Key + ".js";
 #else
-        return $"https://cdn.jsdelivr.net/gh/{GitHubUser}/{part.Repository}@main/{Uri.EscapeDataString(part.File)}";
+        return $"https://cdn.jsdelivr.net/gh/{GitHubUser}/{script.Repository}@main/{Uri.EscapeDataString(script.File)}";
 #endif
     }
 }

@@ -1,5 +1,5 @@
 // Essentials: starts the chosen scripts once a user is signed in and hands each its settings. page.js, loaded before
-// it, sets window.JellyfinEssentials = { parts, headerOrder }; the header buttons read headerOrder themselves.
+// it, sets window.JellyfinEssentials = { scripts, headerOrder }; the header buttons read headerOrder themselves.
 (function () {
   'use strict';
 
@@ -19,25 +19,25 @@
     });
   }
 
-  // The one-copy marks of the scripts: a part whose mark is set already runs from elsewhere (an Injector copy) and
-  // would ignore the settings here.
-  const MARKS = {
+  // Each script sets a global flag so it runs only once. If the flag is already set, another copy (usually from
+  // JavaScript Injector) is running, and the settings here would not reach it. The same flags are in the admin page.
+  const LOAD_FLAGS = {
     random: '__jfRandomButton', autoscroll: '__jfAutoscrollButton', fullscreen: '__jfFullscreenButton',
     detailsGroupItemsExtended: '__jfDetailsGroupItemsExtended', detailsGroupItemsSets: '__jfDetailsGroupItemsSets',
     mediaInfoRatings: '__jfMediaInfoRatings', hoverPreviewTiles: '__jfCollectionPreviewLoaded', keyboardLibraryNavigation: '__jfKeyboardLibraryNav'
   };
 
-  function load(part) {
-    if (window[MARKS[part.key]]) {
-      console.warn('Essentials: ' + part.key + ' already runs from another copy (JavaScript Injector?); its settings here are not used');
+  function load(script) {
+    if (window[LOAD_FLAGS[script.key]]) {
+      console.warn('Essentials: ' + script.key + ' is already loaded by another copy, probably from JavaScript Injector; its settings here are ignored');
       return Promise.resolve();
     }
     return new Promise(resolve => {
-      const script = document.createElement('script');
-      script.src = part.url;
-      script.dataset.essentials = part.key;
-      script.onload = script.onerror = () => resolve();
-      document.head.appendChild(script);
+      const tag = document.createElement('script');
+      tag.src = script.url;
+      tag.dataset.essentials = script.key;
+      tag.onload = tag.onerror = () => resolve();
+      document.head.appendChild(tag);
     });
   }
 
@@ -48,6 +48,6 @@
     } catch (e) {
       console.warn('Essentials: settings could not be read, the scripts run with their own defaults', e);
     }
-    for (const part of essentials.parts) await load(part);
+    for (const script of essentials.scripts) await load(script);
   });
 })();

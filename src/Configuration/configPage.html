@@ -16,7 +16,7 @@
     #EssentialsConfigPage .esTabButton { flex: 1 1 auto; min-width: 68px; text-align: center; padding: 10px 4px; font-size: 12px; font-family: inherit; cursor: pointer;
         opacity: 0.65; border: none; border-bottom: 2px solid transparent; background: none; color: inherit; white-space: nowrap; }
     #EssentialsConfigPage .esTabButton.esTabActive { opacity: 1; border-bottom: 2px solid #00a4dc; font-weight: 500; }
-    #EssentialsConfigPage .esTabButton.esTabGreyed { opacity: 0.35; }
+    #EssentialsConfigPage .esTabButton.esTabGrayed { opacity: 0.35; }
     #EssentialsConfigPage .esTabSeparator { flex: 0 0 2px; width: 2px; height: 21px; align-self: center; background: rgba(255,255,255,0.15); }
     #EssentialsConfigPage .esTabPage { display: none; }
     #EssentialsConfigPage .esTabPage.esTabPageActive { display: block; }
@@ -65,7 +65,6 @@
     #EssentialsConfigPage .esActionButton { min-width: 112px; height: 29px; font-size: 12px; border: 1px solid rgba(255,255,255,.25); border-radius: 3px;
         background: rgba(255,255,255,.08); color: #eee; cursor: pointer; padding: 0 10px; font-family: inherit; }
     #EssentialsConfigPage .esActionButton:hover { background: rgba(255,255,255,.18); }
-    #EssentialsConfigPage .esFieldDisabled { opacity: 0.35; pointer-events: none; }
     #EssentialsConfigPage .esSave { margin-top: 14px; }
     #EssentialsConfigPage .esSave .button-submit { background: #00a4dc; color: #fff; }
     #EssentialsConfigPage .esSave .button-submit:hover { background: #0090c2; }
@@ -91,7 +90,7 @@
     }
 </style>
 <h2>Essentials</h2>
-<p class="esIntro">Eight additions for Jellyfin Web, each with its own switch and settings.<br>The header buttons, those of Globe, Cinema Project and Destroy too, stand in the order set here.</p>
+<p class="esIntro">Eight additions for Jellyfin Web, each with its own switch and settings.<br>Also sets the order of the header buttons, including those of Globe, Cinema Project and Destroy.</p>
 <div id="esTabBar"></div>
 <form id="EssentialsConfigForm">
     <div id="esPages"></div>
@@ -112,47 +111,50 @@
         ['metacritic', 5, 'Metacritic'], ['metacritic_user', 6, 'Metacritic User'], ['trakt', 7, 'Trakt'], ['letterboxd', 8, 'Letterboxd'],
         ['roger_ebert', 9, 'Roger Ebert'], ['kinopoisk', 10, 'Kinopoisk'], ['myanimelist', 11, 'MyAnimeList']];
 
-    function ratingsFields(c, movie) {
+    function ratingsFields(prefix, isMovie) {
         var f = [
-            { path: c + '.UI_JELLYFIN_DB_RATINGS_MODE', label: 'Jellyfin Ratings', type: 'select', def: 'rating_only',
-                options: [['both', 'Community and Critics'], ['rating_only', 'Community Only'], ['critics_only', 'Critics Only'], ['hide', 'None']],
+            { path: prefix + '.UI_JELLYFIN_DB_RATINGS_MODE', label: 'Jellyfin Ratings', type: 'select', def: 'rating_only',
+                options: [['both', 'Community and Critic'], ['rating_only', 'Community Only'], ['critics_only', 'Critic Only'], ['hide', 'None']],
                 desc: 'Which of Jellyfin\'s own ratings stay in the line.' },
-            { path: c + '.UI_DEACTIVATE_JELLYFIN_EXTRA_RATINGS', label: 'Hide Outside Ratings', type: 'bool', def: false, desc: 'Shows no ratings from MDBList at all.' },
-            { path: c + '.UI_INTERNAL_RATINGS_NEW_LINE_MOVE', label: 'Jellyfin Ratings on Own Line', type: 'bool', def: true, desc: 'Moves Jellyfin\'s own ratings to a second line.' },
-            { path: c + '.UI_EXTERNAL_RATINGS_NEW_LINE', label: 'Outside Ratings on Own Line', type: 'bool', def: true, desc: 'Shows the MDBList ratings on a line of their own.' }
+            { path: prefix + '.UI_DEACTIVATE_JELLYFIN_EXTRA_RATINGS', label: 'Hide MDBList Ratings', type: 'bool', def: false, desc: 'Shows no MDBList ratings at all.' },
+            { path: prefix + '.UI_INTERNAL_RATINGS_NEW_LINE_MOVE', label: 'Jellyfin Ratings on Own Line', type: 'bool', def: true, desc: 'Moves Jellyfin\'s own ratings to a second line.' },
+            { path: prefix + '.UI_EXTERNAL_RATINGS_NEW_LINE', label: 'MDBList Ratings on Own Line', type: 'bool', def: true, desc: 'Shows the MDBList ratings on a line of their own.' }
         ];
-        if (movie) f.push(
-            { path: c + '.ENDING_AT_MODE', label: 'Ends At', type: 'bool', def: true, desc: 'Shows when the movie ends.' },
-            { path: c + '.ENDING_AT_POSITION_MODE', label: 'Ends At Position', type: 'select', def: 'vanilla',
-                options: [['vanilla', 'As Jellyfin Places It'], ['begin', 'Start of the Line'], ['end', 'End of the Line']], desc: 'Where "Ends at" stands within its line.' },
-            { path: c + '.ENDING_AT_LINE_MODE', label: 'Ends At Line', type: 'select', def: 'main',
-                options: [['main', 'Main Line'], ['after_main', 'Line After the Main Line'], ['after_external', 'Line After the Outside Ratings'], ['same_external', 'Line of the Outside Ratings']],
+        if (isMovie) f.push(
+            { path: prefix + '.ENDING_AT_MODE', label: 'Ends At', type: 'bool', def: true, desc: 'Shows when the movie ends.' },
+            { path: prefix + '.ENDING_AT_POSITION_MODE', label: 'Ends At Position', type: 'select', def: 'vanilla',
+                options: [['vanilla', 'As Jellyfin Places It'], ['begin', 'Start of the Line'], ['end', 'End of the Line']], desc: 'Where "Ends at" appears in its line.' },
+            { path: prefix + '.ENDING_AT_LINE_MODE', label: 'Ends At Line', type: 'select', def: 'main',
+                options: [['main', 'Main Line'], ['after_main', 'Line After the Main Line'], ['after_external', 'Line After the MDBList Ratings'], ['same_external', 'Line of the MDBList Ratings']],
                 desc: 'Which line "Ends at" goes to.' });
         f.push(
-            { path: c + '.UI_CRITICSRATING_ICON_FRESH', label: 'Fresh Icon', type: 'bool', def: true, desc: 'Shows Jellyfin\'s critics rating with the fresh tomato from a set score.' },
-            { path: c + '.UI_CRITICSRATING_ICON_FRESH_SCORE', label: 'Fresh From', type: 'number', def: 6.0, min: 0, max: 10, step: 0.1, desc: 'The score (0 to 10) from which the fresh tomato is shown.' },
-            { path: c + '.UI_CRITICSRATING_ICON_CERTIFIED', label: 'Certified Icon', type: 'bool', def: true, desc: 'Shows Jellyfin\'s critics rating with the certified icon from a set score.' },
-            { path: c + '.UI_CRITICSRATING_ICON_CERTIFIED_SCORE', label: 'Certified From', type: 'number', def: 9.0, min: 0, max: 10, step: 0.1, desc: 'The score (0 to 10) from which the certified icon is shown.' },
-            { path: c + '.UI_RT_ICON_CERTIFIED', label: 'Rotten Tomatoes Certified', type: 'bool', def: true, desc: 'Shows the Rotten Tomatoes rating from MDBList with the certified icon from a set score.' },
-            { path: c + '.UI_RT_ICON_CERTIFIED_SCORE', label: 'Rotten Tomatoes Certified From', type: 'number', def: 9.0, min: 0, max: 10, step: 0.1, desc: 'The score (0 to 10) from which that icon is shown.' },
-            { path: c + '.LIMIT_MAX_RATINGS', label: 'Most Ratings', type: 'number', def: 6, min: 0, max: 11, step: 1, desc: 'How many outside ratings are shown at most; 0 shows all.' },
-            { path: c + '.SOURCE_ORDER', label: 'Sources', type: 'order', def: RATINGS_SOURCES.map(function (s) { return s[1]; }),
-                items: RATINGS_SOURCES.map(function (s) { return [s[1], s[2], c + '.SOURCES.' + s[0] + '.enabled']; }),
-                desc: 'The outside ratings in the order they are shown; a source without a tick is left out.' });
+            { path: prefix + '.UI_CRITICSRATING_ICON_FRESH', label: 'Fresh Icon', type: 'bool', def: true, desc: 'Shows Jellyfin\'s critic rating with the fresh tomato from a set score.' },
+            { path: prefix + '.UI_CRITICSRATING_ICON_FRESH_SCORE', label: 'Fresh Score', type: 'number', def: 6.0, min: 0, max: 10, step: 0.1, desc: 'The lowest score (0 to 10) that shows the fresh tomato.' },
+            { path: prefix + '.UI_CRITICSRATING_ICON_CERTIFIED', label: 'Certified Icon', type: 'bool', def: true, desc: 'Shows Jellyfin\'s critic rating with the certified icon from a set score.' },
+            { path: prefix + '.UI_CRITICSRATING_ICON_CERTIFIED_SCORE', label: 'Certified Score', type: 'number', def: 9.0, min: 0, max: 10, step: 0.1, desc: 'The lowest score (0 to 10) that shows the certified icon.' },
+            { path: prefix + '.UI_RT_ICON_CERTIFIED', label: 'Rotten Tomatoes Certified', type: 'bool', def: true, desc: 'Shows the Rotten Tomatoes rating from MDBList with the certified icon from a set score.' },
+            { path: prefix + '.UI_RT_ICON_CERTIFIED_SCORE', label: 'Rotten Tomatoes Certified Score', type: 'number', def: 9.0, min: 0, max: 10, step: 0.1, desc: 'The lowest score (0 to 10) that shows the certified icon.' },
+            { path: prefix + '.LIMIT_MAX_RATINGS', label: 'Maximum Ratings', type: 'number', def: 6, min: 0, max: 11, step: 1, desc: 'How many MDBList ratings are shown at most; 0 shows all.' },
+            { path: prefix + '.SOURCE_ORDER', label: 'Sources', type: 'order', def: RATINGS_SOURCES.map(function (s) { return s[1]; }),
+                items: RATINGS_SOURCES.map(function (s) { return [s[1], s[2], prefix + '.SOURCES.' + s[0] + '.enabled']; }),
+                desc: 'The MDBList ratings in the order they are shown; a source without a tick is left out.' });
         return f;
     }
 
+    // The card types of Hover Preview Tiles: the script's settings object for each, and what differs between them.
     var HOVER_TYPES = [
-        ['CONFIG_SETS', 'Collections', { maxPosters: 100, width: 110, sort: 'PremiereDate', extra: [['showYearInTitle', 'Year in Title', true, 'Shows the year after each title.']] }],
-        ['CONFIG_TVSHOWS', 'Series', { maxPosters: 100, width: 110, sort: 'PremiereDate', extra: [
+        { config: 'CONFIG_SETS', title: 'Collections', maxPosters: 100, width: 110, sort: 'PremiereDate', scrollSettle: true,
+            extra: [['showYearInTitle', 'Year in Title', true, 'Shows the year after each title.']] },
+        { config: 'CONFIG_TVSHOWS', title: 'Series', maxPosters: 100, width: 110, sort: 'PremiereDate', extra: [
             ['skipSingleSeason', 'Skip a Single Season', true, 'Shows no seasons for a series with only one.'],
-            ['singleSeasonShowEpisodesInstead', 'Episodes Instead', true, 'For a series with one season, shows its episodes instead.']] }],
-        ['CONFIG_TVSEASONS', 'Seasons', { maxPosters: 100, height: 165, aspect: '2/3, 1/1, 4/3, 16/9', fallback: '2/3', sort: 'PremiereDate', extra: [
-            ['showSeasonEpisodeNumberInTitle', 'Episode Number in Title', true, 'Puts "S1:E2 – " in front of each title.']] }],
-        ['CONFIG_HOMEVIDEOS', 'Home Video Folders', { maxPosters: 33, height: 165, aspect: '2/3, 1/1, 4/3, 16/9, 9/16', fallback: '2/3', sort: 'Random', zone: true, homeFolders: true }],
-        ['CONFIG_MOVIES', 'Movie Chapters', { maxPosters: 100, height: 165, fallback: '16/9' }],
-        ['CONFIG_EPISODES', 'Episode Chapters', { maxPosters: 100, height: 165, fallback: '16/9', zone: true }],
-        ['CONFIG_HOMEVIDEOFILES', 'Home Video Chapters', { maxPosters: 100, height: 165, fallback: '16/9' }]
+            ['singleSeasonShowEpisodesInstead', 'Episodes Instead', true, 'For a series with one season, shows its episodes instead.']] },
+        { config: 'CONFIG_TVSEASONS', title: 'Seasons', maxPosters: 100, height: 165, aspect: '2/3, 1/1, 4/3, 16/9', fallback: '2/3', sort: 'PremiereDate', extra: [
+            ['showSeasonEpisodeNumberInTitle', 'Episode Number in Title', true, 'Puts "S1:E2 – " in front of each title.']] },
+        { config: 'CONFIG_HOMEVIDEOS', title: 'Home Video Folders', maxPosters: 33, height: 165, aspect: '2/3, 1/1, 4/3, 16/9, 9/16', fallback: '2/3', sort: 'Random',
+            centerArea: true, homeFolders: true },
+        { config: 'CONFIG_MOVIES', title: 'Movie Chapters', maxPosters: 100, height: 165, fallback: '16/9' },
+        { config: 'CONFIG_EPISODES', title: 'Episode Chapters', maxPosters: 100, height: 165, fallback: '16/9', centerArea: true },
+        { config: 'CONFIG_HOMEVIDEOFILES', title: 'Home Video Chapters', maxPosters: 100, height: 165, fallback: '16/9' }
     ];
     function hoverSections() {
         var sections = [{ title: 'Where', fields: [
@@ -160,64 +162,64 @@
             { path: 'GLOBAL_SETTINGS.enablePreviewsOnSimilarSection', label: 'More Like This', type: 'bool', def: true, desc: 'Previews in "More Like This" on detail pages.' },
             { path: 'GLOBAL_SETTINGS.enablePreviewsOnNextUp', label: 'Next Up', type: 'bool', def: true, desc: 'Previews in "Next Up".' }] }];
         HOVER_TYPES.forEach(function (t) {
-            var c = t[0], o = t[2];
+            var prefix = t.config;
             var basic = [
-                { path: c + '.enabled', label: 'Preview', type: 'bool', def: true, desc: 'Shows the preview on these cards.' },
-                { path: c + '.centerHoverOnly', label: 'Only Over the Middle', type: 'bool', def: true, desc: 'Opens only while the mouse rests over the middle of the card.' },
-                { path: c + '.centerHoverOnlyDelay', label: 'Wait Over the Middle', type: 'number', def: 1500, min: 0, step: 50, unit: 'ms', desc: 'How long the mouse rests over the middle before the preview opens.' },
-                { path: c + '.hoverDelay', label: 'Wait Over the Card', type: 'number', def: 220, min: 0, step: 10, unit: 'ms', desc: 'How long the mouse rests on the card before the preview opens, when the whole card counts.' },
-                { path: c + '.maxPosters', label: 'Most Tiles', type: 'number', def: o.maxPosters, min: 1, step: 1, desc: 'How many tiles are shown; the rest is counted as "+N".' },
-                { path: c + '.subtileFocusPlayButton', label: 'Play Button on Tiles', type: 'bool', def: true, desc: 'Shows a play button on the tile under the mouse.' }
+                { path: prefix + '.enabled', label: 'Preview', type: 'bool', def: true, desc: 'Shows the preview on these cards.' },
+                { path: prefix + '.centerHoverOnly', label: 'Center Only', type: 'bool', def: true, desc: 'Opens only while the mouse rests over the center of the card.' },
+                { path: prefix + '.centerHoverOnlyDelay', label: 'Center Delay', type: 'number', def: 1500, min: 0, step: 50, unit: 'ms', desc: 'How long the mouse rests over the center before the preview opens.' },
+                { path: prefix + '.hoverDelay', label: 'Hover Delay', type: 'number', def: 220, min: 0, step: 10, unit: 'ms', desc: 'How long the mouse rests on the card before the preview opens, when the whole card counts.' },
+                { path: prefix + '.maxPosters', label: 'Maximum Tiles', type: 'number', def: t.maxPosters, min: 1, step: 1, desc: 'How many tiles are shown; the rest is counted as "+N".' },
+                { path: prefix + '.subtileFocusPlayButton', label: 'Play Button on Tiles', type: 'bool', def: true, desc: 'Shows a play button on the tile under the mouse.' }
             ];
-            if (o.sort) basic.push(
-                { path: c + '.sortBy', label: 'Sort', type: 'select', def: o.sort, options: SORTS, desc: 'The order of the tiles.' },
-                { path: c + '.sortOrder', label: 'Sort Order', type: 'select', def: 'Ascending', options: ORDERS, desc: 'The direction of the sort.' });
-            (o.extra || []).forEach(function (e) { basic.push({ path: c + '.' + e[0], label: e[1], type: 'bool', def: e[2], desc: e[3] }); });
-            if (o.homeFolders) basic.push(
-                { path: c + '.separateSortForFoldersAndVideos', label: 'Folders and Videos Apart', type: 'bool', def: false, desc: 'Sorts folders and videos each on their own.' },
-                { path: c + '.folderSortBy', label: 'Folder Sort', type: 'select', def: 'SortName', options: SORTS, desc: 'The order of the folders, when sorted apart.' },
-                { path: c + '.folderSortOrder', label: 'Folder Sort Order', type: 'select', def: 'Ascending', options: ORDERS, desc: 'The direction of the folder sort.' },
-                { path: c + '.videoSortBy', label: 'Video Sort', type: 'select', def: 'Random', options: SORTS, desc: 'The order of the videos, when sorted apart.' },
-                { path: c + '.videoSortOrder', label: 'Video Sort Order', type: 'select', def: 'Ascending', options: ORDERS, desc: 'The direction of the video sort.' },
-                { path: c + '.mixedOrderMode', label: 'First', type: 'select', def: 'foldersFirst', options: [['foldersFirst', 'Folders'], ['videosFirst', 'Videos']], desc: 'Whether folders or videos come first.' },
-                { path: c + '.skipFolderLayerNamesEnabled', label: 'Skip Wrapper Folders', type: 'bool', def: true, desc: 'Looks through a folder that only holds another folder with one of the names below.' },
-                { path: c + '.skipFolderLayerNames', label: 'Wrapper Folder Names', type: 'text', def: 'videos', desc: 'Folder names that count as wrappers, separated by commas.' },
-                { path: c + '.skipFolderLayerExactMatchEnabled', label: 'Exact Name', type: 'bool', def: true, desc: 'A folder whose name is exactly one of them is skipped.' },
-                { path: c + '.skipFolderLayerFuzzyFallbackEnabled', label: 'Name Contains', type: 'bool', def: true, desc: 'A folder whose name only contains one of them is skipped too.' },
-                { path: c + '.maxFolderSkipDepth', label: 'Skip Depth', type: 'number', def: 1, min: 0, step: 1, desc: 'How many wrapper folders in a row are skipped at most.' });
+            if (t.sort) basic.push(
+                { path: prefix + '.sortBy', label: 'Sort', type: 'select', def: t.sort, options: SORTS, desc: 'The order of the tiles.' },
+                { path: prefix + '.sortOrder', label: 'Sort Order', type: 'select', def: 'Ascending', options: ORDERS, desc: 'The direction of the sort.' });
+            (t.extra || []).forEach(function (e) { basic.push({ path: prefix + '.' + e[0], label: e[1], type: 'bool', def: e[2], desc: e[3] }); });
+            if (t.homeFolders) basic.push(
+                { path: prefix + '.separateSortForFoldersAndVideos', label: 'Sort Separately', type: 'bool', def: false, desc: 'Sorts folders and videos separately.' },
+                { path: prefix + '.folderSortBy', label: 'Folder Sort', type: 'select', def: 'SortName', options: SORTS, desc: 'The order of the folders, when sorted separately.' },
+                { path: prefix + '.folderSortOrder', label: 'Folder Sort Order', type: 'select', def: 'Ascending', options: ORDERS, desc: 'The direction of the folder sort.' },
+                { path: prefix + '.videoSortBy', label: 'Video Sort', type: 'select', def: 'Random', options: SORTS, desc: 'The order of the videos, when sorted separately.' },
+                { path: prefix + '.videoSortOrder', label: 'Video Sort Order', type: 'select', def: 'Ascending', options: ORDERS, desc: 'The direction of the video sort.' },
+                { path: prefix + '.mixedOrderMode', label: 'First', type: 'select', def: 'foldersFirst', options: [['foldersFirst', 'Folders'], ['videosFirst', 'Videos']], desc: 'Whether folders or videos come first.' },
+                { path: prefix + '.skipFolderLayerNamesEnabled', label: 'Skip Wrapper Folders', type: 'bool', def: true, desc: 'Looks through a folder that only holds another folder with one of the names below.' },
+                { path: prefix + '.skipFolderLayerNames', label: 'Wrapper Folder Names', type: 'text', def: 'videos', desc: 'Folder names that count as wrappers, separated by commas.' },
+                { path: prefix + '.skipFolderLayerExactMatchEnabled', label: 'Exact Name', type: 'bool', def: true, desc: 'A folder whose name is exactly one of them is skipped.' },
+                { path: prefix + '.skipFolderLayerFuzzyFallbackEnabled', label: 'Name Contains', type: 'bool', def: true, desc: 'A folder whose name only contains one of them is skipped too.' },
+                { path: prefix + '.maxFolderSkipDepth', label: 'Skip Depth', type: 'number', def: 1, min: 0, step: 1, desc: 'How many wrapper folders in a row are skipped at most.' });
             var advanced = [];
-            if (o.width) advanced.push({ path: c + '.posterWidth', label: 'Tile Width', type: 'number', def: o.width, min: 20, step: 1, unit: 'px', desc: 'The width of a tile.' });
-            if (o.height) advanced.push({ path: c + '.posterHeight', label: 'Tile Height', type: 'number', def: o.height, min: 20, step: 1, unit: 'px', desc: 'The height of a tile.' });
-            if (o.aspect) advanced.push(
-                { path: c + '.autoDetectAspectRatio', label: 'Find the Shape', type: 'bool', def: true, desc: 'Takes the tile shape from the pictures.' },
-                { path: c + '.aspectRatioCandidates', label: 'Shapes', type: 'text', def: o.aspect, desc: 'The shapes a tile snaps to, separated by commas.' });
-            if (o.fallback) advanced.push({ path: c + '.fallbackAspectRatio', label: 'Shape Otherwise', type: 'text', def: o.fallback, desc: 'The tile shape when none is found.' });
+            if (t.width) advanced.push({ path: prefix + '.posterWidth', label: 'Tile Width', type: 'number', def: t.width, min: 20, step: 1, unit: 'px', desc: 'The width of a tile.' });
+            if (t.height) advanced.push({ path: prefix + '.posterHeight', label: 'Tile Height', type: 'number', def: t.height, min: 20, step: 1, unit: 'px', desc: 'The height of a tile.' });
+            if (t.aspect) advanced.push(
+                { path: prefix + '.autoDetectAspectRatio', label: 'Detect Aspect Ratio', type: 'bool', def: true, desc: 'Takes each tile\'s aspect ratio from its image.' },
+                { path: prefix + '.aspectRatioCandidates', label: 'Aspect Ratios', type: 'text', def: t.aspect, desc: 'The aspect ratios a tile snaps to, separated by commas.' });
+            if (t.fallback) advanced.push({ path: prefix + '.fallbackAspectRatio', label: 'Fallback Aspect Ratio', type: 'text', def: t.fallback, desc: 'The aspect ratio when none is detected.' });
             advanced.push(
-                { path: c + '.maxSpreadDeg', label: 'Widest Fan', type: 'number', def: 110, min: 0, step: 1, unit: '°', desc: 'The widest angle of the fan.' },
-                { path: c + '.degPerPoster', label: 'Angle per Tile', type: 'number', def: 16, min: 0, step: 1, unit: '°', desc: 'How much the fan widens per tile.' },
-                { path: c + '.lift', label: 'Lift', type: 'number', def: 130, min: 0, step: 1, unit: 'px', desc: 'How high the fan rises above the card.' },
-                { path: c + '.overlap', label: 'Overlap', type: 'number', def: 0.5, min: 0, max: 1, step: 0.05, desc: 'How much of a tile lies over the card, from 0 to 1.' },
-                { path: c + '.hoverPushDeg', label: 'Push Aside', type: 'number', def: 11, min: 0, step: 1, unit: '°', desc: 'How far the neighbours of the tile under the mouse move aside.' },
-                { path: c + '.hoverSpreadScale', label: 'Spread While Moving', type: 'number', def: 1.06, min: 1, step: 0.01, desc: 'How much the fan widens while the mouse moves over it.' },
-                { path: c + '.smoothing', label: 'Smoothing', type: 'number', def: 0.18, min: 0, max: 1, step: 0.01, desc: 'How quickly the fan follows the mouse, from 0 to 1.' },
-                { path: c + '.staggerMs', label: 'Stagger', type: 'number', def: 28, min: 0, step: 1, unit: 'ms', desc: 'The delay between the tiles as they open.' },
-                { path: c + '.closeMs', label: 'Closing', type: 'number', def: 220, min: 0, step: 10, unit: 'ms', desc: 'How long the fan takes to close.' });
-            if (c === 'CONFIG_SETS') advanced.push({ path: c + '.scrollSettleMs', label: 'After Scrolling', type: 'number', def: 160, min: 0, step: 10, unit: 'ms',
-                desc: 'How long the page must rest after scrolling before a preview opens; this one value holds for all cards.' });
-            if (o.zone) advanced.push({ path: c + '.centerHoverZoneRatio', label: 'Middle Area', type: 'number', def: 0.22, min: 0.05, max: 1, step: 0.01,
-                desc: 'The size of the middle area, as a part of the card, for cards without a play button.' });
+                { path: prefix + '.maxSpreadDeg', label: 'Widest Fan', type: 'number', def: 110, min: 0, step: 1, unit: '°', desc: 'The widest angle of the fan.' },
+                { path: prefix + '.degPerPoster', label: 'Angle per Tile', type: 'number', def: 16, min: 0, step: 1, unit: '°', desc: 'How much the fan widens per tile.' },
+                { path: prefix + '.lift', label: 'Lift', type: 'number', def: 130, min: 0, step: 1, unit: 'px', desc: 'How high the fan rises above the card.' },
+                { path: prefix + '.overlap', label: 'Overlap', type: 'number', def: 0.5, min: 0, max: 1, step: 0.05, desc: 'How much of a tile lies over the card, from 0 to 1.' },
+                { path: prefix + '.hoverPushDeg', label: 'Push Aside', type: 'number', def: 11, min: 0, step: 1, unit: '°', desc: 'How far the neighbors of the tile under the mouse move aside.' },
+                { path: prefix + '.hoverSpreadScale', label: 'Spread While Moving', type: 'number', def: 1.06, min: 1, step: 0.01, desc: 'How much the fan widens while the mouse moves over it.' },
+                { path: prefix + '.smoothing', label: 'Smoothing', type: 'number', def: 0.18, min: 0, max: 1, step: 0.01, desc: 'How quickly the fan follows the mouse, from 0 to 1.' },
+                { path: prefix + '.staggerMs', label: 'Stagger', type: 'number', def: 28, min: 0, step: 1, unit: 'ms', desc: 'The delay between the tiles as they open.' },
+                { path: prefix + '.closeMs', label: 'Closing', type: 'number', def: 220, min: 0, step: 10, unit: 'ms', desc: 'How long the fan takes to close.' });
+            if (t.scrollSettle) advanced.push({ path: prefix + '.scrollSettleMs', label: 'After Scrolling', type: 'number', def: 160, min: 0, step: 10, unit: 'ms',
+                desc: 'How long the page must rest after scrolling before a preview opens; one value for all card types.' });
+            if (t.centerArea) advanced.push({ path: prefix + '.centerHoverZoneRatio', label: 'Center Area', type: 'number', def: 0.22, min: 0.05, max: 1, step: 0.01,
+                desc: 'The size of the center area, as a fraction of the card, for cards without a play button.' });
             advanced.push(
-                { path: c + '.subtilePlayButtonSizeRatio', label: 'Play Button Size', type: 'number', def: 0.4, min: 0.1, max: 1, step: 0.05, desc: 'The size of the play button, as a part of the tile.' },
-                { path: c + '.directPlayButtonTimeoutMs', label: 'Wait for Play', type: 'number', def: 4000, min: 0, step: 100, unit: 'ms', desc: 'How long a click waits for Jellyfin\'s own play button.' },
-                { path: c + '.directPlayRevealDelayMs', label: 'Black Before Playing', type: 'number', def: 500, min: 0, step: 50, unit: 'ms', desc: 'How long the screen stays black before the video shows.' });
-            sections.push({ title: t[1], fields: basic });
-            sections.push({ title: t[1] + ': Look and Motion', advanced: true, fields: advanced });
+                { path: prefix + '.subtilePlayButtonSizeRatio', label: 'Play Button Size', type: 'number', def: 0.4, min: 0.1, max: 1, step: 0.05, desc: 'The size of the play button, as a fraction of the tile.' },
+                { path: prefix + '.directPlayButtonTimeoutMs', label: 'Wait for Play', type: 'number', def: 4000, min: 0, step: 100, unit: 'ms', desc: 'How long a click waits for Jellyfin\'s own play button.' },
+                { path: prefix + '.directPlayRevealDelayMs', label: 'Black Before Playing', type: 'number', def: 500, min: 0, step: 50, unit: 'ms', desc: 'How long the screen stays black before the video shows.' });
+            sections.push({ title: t.title, fields: basic });
+            sections.push({ title: t.title + ': Look and Motion', advanced: true, fields: advanced });
         });
         return sections;
     }
 
     var SCHEMA = [
-        { part: 'random', tab: 'Random', title: 'Random Button', desc: 'A die in the header opens a random title of the library you are in; a double-click starts the auto mode, a triple-click changes its time.',
+        { script: 'random', tab: 'Random', title: 'Random Button Extended', desc: 'A die in the header opens a random title of the library you are in; a double-click starts auto mode, a triple-click changes its interval.',
             header: 'random',
             sections: [
                 { title: 'Libraries', fields: [
@@ -227,22 +229,22 @@
                     { path: 'HOME1_PARENT_ID', label: 'Home Videos 1', type: 'library', collection: 'homevideos', def: '', desc: 'A home video library the die picks from.' },
                     { path: 'HOME2_PARENT_ID', label: 'Home Videos 2', type: 'library', collection: 'homevideos', def: '', desc: 'A second home video library the die picks from.' }] },
                 { title: 'Auto Mode', fields: [
-                    { path: 'timerStates', label: 'Times', type: 'numberList', def: [3, 6, 12, 24, 48], min: 1, unit: 's', desc: 'The times a triple-click steps through, in seconds, separated by commas.' },
-                    { path: 'defaultTimer', label: 'Time at Start', type: 'number', def: 24, min: 1, step: 1, unit: 's', desc: 'The time after the page loads; it should be one of the times above.' }] }
+                    { path: 'timerStates', label: 'Intervals', type: 'numberList', def: [3, 6, 12, 24, 48], min: 1, unit: 's', desc: 'The intervals a triple-click steps through, in seconds, separated by commas.' },
+                    { path: 'defaultTimer', label: 'Starting Interval', type: 'number', def: 24, min: 1, step: 1, unit: 's', desc: 'The interval after the page loads; it should be one of the intervals above.' }] }
             ] },
-        { part: 'autoscroll', tab: 'Autoscroll', title: 'Autoscroll Button', desc: 'A header button scrolls the page down slowly and starts again at the top; a double-click changes the speed, a triple-click the pause at the top.',
+        { script: 'autoscroll', tab: 'Autoscroll', title: 'Autoscroll Button', desc: 'A header button scrolls the page down slowly and starts again at the top; a double-click changes the speed, a triple-click the pause at the top.',
             header: 'autoscroll',
             sections: [{ title: 'Scrolling', fields: [
                 { path: 'speeds', label: 'Speeds', type: 'numberList', def: [0.03, 0.06, 0.2], count: 3, min: 0.001, desc: 'Three speeds, slow to fast, separated by commas.' },
-                { path: 'speedStart', label: 'Speed at Start', type: 'select', def: 1, options: [[1, 'Speed 1'], [2, 'Speed 2'], [3, 'Speed 3']], desc: 'The speed after the page loads.' },
+                { path: 'speedStart', label: 'Starting Speed', type: 'select', def: 1, options: [[1, 'Speed 1'], [2, 'Speed 2'], [3, 'Speed 3']], desc: 'The speed after the page loads.' },
                 { path: 'delayStates', label: 'Pauses at the Top', type: 'numberList', def: [0, 1, 3, 5, 10], min: 0, unit: 's', desc: 'The pauses a triple-click steps through, in seconds, separated by commas.' },
-                { path: 'delayStart', label: 'Pause at Start', type: 'number', def: 1, min: 1, step: 1, desc: 'Which of the pauses holds after the page loads, counted from 1.' },
+                { path: 'delayStart', label: 'Starting Pause', type: 'number', def: 1, min: 1, step: 1, desc: 'The pause used after the page loads, by its position in the list above (1 = first).' },
                 { path: 'bottomDelay', label: 'Pause at the Bottom', type: 'number', def: 3000, min: 0, step: 100, unit: 'ms', desc: 'How long it waits at the bottom before it starts again at the top.' }] }] },
-        { part: 'fullscreen', tab: 'Fullscreen', title: 'Fullscreen Button', desc: 'A header button switches the browser to fullscreen and back, like F11.', header: 'fullscreen', sections: [] },
-        { part: 'detailsGroupItemsExtended', tab: 'Details', title: 'Details Group Items Extended', desc: 'Country, awards and box office from OMDb in the details block of movies and series.',
+        { script: 'fullscreen', tab: 'Fullscreen', title: 'Fullscreen Button', desc: 'A header button switches the browser to fullscreen and back, like F11.', header: 'fullscreen', sections: [] },
+        { script: 'detailsGroupItemsExtended', tab: 'Details', title: 'Details Group Items Extended', desc: 'Country, awards and box office from OMDb in the details block of movies and series.',
             sections: [
                 { title: 'OMDb', fields: [
-                    { path: 'OMDB_API_KEY', label: 'OMDb API Key', type: 'secret', def: '', desc: 'Your key from omdbapi.com; every signed-in browser receives it, as with the script.' }] },
+                    { path: 'OMDB_API_KEY', label: 'OMDb API Key', type: 'secret', def: '', desc: 'Your key from omdbapi.com. Like any key a browser script uses, it is sent to every signed-in user.' }] },
                 { title: 'Movies', fields: [
                     { path: 'SETTINGS.movies.rowOrder', label: 'Rows', type: 'order', def: ['country', 'awards', 'boxoffice'],
                         items: [['country', 'Country', 'SETTINGS.movies.enableCountry'], ['awards', 'Awards', 'SETTINGS.movies.enableAwards'], ['boxoffice', 'Box Office', 'SETTINGS.movies.enableBoxOffice']],
@@ -259,48 +261,50 @@
                     { path: 'SETTINGS.labels.awards', label: 'Awards', type: 'text', def: 'Awards', desc: 'The label in front of the awards.' },
                     { path: 'SETTINGS.labels.boxoffice', label: 'Box Office', type: 'text', def: 'Box Office', desc: 'The label in front of the box office.' }] }
             ] },
-        { part: 'detailsGroupItemsSets', tab: 'Collection Row', title: 'Details Group Items Sets', desc: 'A row in the details block of a movie that links to its collection.',
+        { script: 'detailsGroupItemsSets', tab: 'Collection Row', title: 'Details Group Items Sets', desc: 'A row in the details block of a movie that links to its collection.',
             sections: [{ title: 'Row', fields: [
                 { path: 'CONFIG.labelText', label: 'Label', type: 'text', def: 'Collection', desc: 'The label in front of the collection name.' },
-                { path: 'CONFIG.position', label: 'Position', type: 'select', def: 'top', options: [['top', 'First'], ['after', 'After a Row'], ['end', 'Last']], desc: 'Where the row stands in the block.' },
+                { path: 'CONFIG.position', label: 'Position', type: 'select', def: 'top', options: [['top', 'First'], ['after', 'After a Row'], ['end', 'Last']], desc: 'Where the row appears in the block.' },
                 { path: 'CONFIG.afterLabel', label: 'After', type: 'select', def: 'Studio', options: opts(['Genres', 'Director', 'Writer', 'Studio', 'Country', 'Awards', 'Box Office']),
                     desc: 'The row it follows with "After a Row"; Country, Awards and Box Office need Details Group Items Extended.' },
                 { path: 'CONFIG.enablePhraseParser', label: 'Rename Words', type: 'bool', def: false, desc: 'Replaces words in collection names; the metadata stays as it is.' },
                 { path: 'CONFIG.phraseParser', label: 'Replacements', type: 'pairs', def: [{ from: 'Filmreihe', to: 'Collection' }], desc: 'One per line: word = replacement.' }] }] },
-        { part: 'mediaInfoRatings', tab: 'Ratings', title: 'MediaInfo Ratings', desc: 'Ratings from up to eleven sources by MDBList in the media info line of movies and series.',
+        { script: 'mediaInfoRatings', tab: 'Ratings', title: 'MediaInfo Ratings Enhanced', desc: 'Ratings from up to eleven sources by MDBList in the media info line of movies and series.',
             sections: [
                 { title: 'MDBList', fields: [
-                    { path: 'CONFIG_GLOBAL.API_KEY', label: 'MDBList API Key', type: 'secret', def: '', desc: 'Your key from mdblist.com; every signed-in browser receives it, as with the script.' },
-                    { path: 'CONFIG_GLOBAL.EXTRA_ROW_SPACE', label: 'Room for the Line', type: 'select', def: 'reserve', options: [['reserve', 'From the Start'], ['grow', 'When Ratings Arrive']],
-                        desc: 'When the room for the ratings line is made.' },
-                    { path: 'CONFIG_GLOBAL.CACHE.enabled', label: 'Remember Answers', type: 'bool', def: true, desc: 'Keeps the answers for a while to save requests.' },
-                    { path: 'CONFIG_GLOBAL.CACHE.ttlMinutes', label: 'Remember For', type: 'number', def: 360, min: 1, step: 1, unit: 'min', desc: 'How long an answer is kept.' }] },
+                    { path: 'CONFIG_GLOBAL.API_KEY', label: 'MDBList API Key', type: 'secret', def: '', desc: 'Your key from mdblist.com. Like any key a browser script uses, it is sent to every signed-in user.' },
+                    { path: 'CONFIG_GLOBAL.EXTRA_ROW_SPACE', label: 'Reserve Space', type: 'select', def: 'reserve', options: [['reserve', 'Always'], ['grow', 'When Ratings Arrive']],
+                        desc: 'When the space for the ratings line is made.' },
+                    { path: 'CONFIG_GLOBAL.CACHE.enabled', label: 'Cache Responses', type: 'bool', def: true, desc: 'Keeps MDBList responses for a while to save requests.' },
+                    { path: 'CONFIG_GLOBAL.CACHE.ttlMinutes', label: 'Cache Duration', type: 'number', def: 360, min: 1, step: 1, unit: 'min', desc: 'How long a response is kept.' }] },
                 { title: 'Movies', fields: ratingsFields('CONFIG_MOVIE', true) },
                 { title: 'Series', fields: ratingsFields('CONFIG_SHOW', false) }
             ] },
-        { part: 'hoverPreviewTiles', tab: 'Hover Previews', title: 'Hover Preview Tiles', desc: 'Resting the mouse on a card fans out its contents or chapters; a click opens or plays.', sections: hoverSections() },
-        { part: 'keyboardLibraryNavigation', tab: 'Keyboard', title: 'Keyboard Library Navigation', desc: 'Type a command anywhere and press Enter to open, search, filter, sort or play.',
+        { script: 'hoverPreviewTiles', tab: 'Hover Previews', title: 'Hover Preview Tiles Extended', desc: 'Resting the mouse on a card fans out its contents or chapters; a click opens or plays.', sections: hoverSections() },
+        { script: 'keyboardLibraryNavigation', tab: 'Keyboard', title: 'Keyboard Library Navigation', desc: 'Type a command anywhere and press Enter to open, search, filter, sort or play.',
             sections: [{ title: 'Typing', fields: [
                 { path: 'CONFIG.idleResetMs', label: 'Clear After', type: 'number', def: 2500, min: 100, step: 100, unit: 'ms', desc: 'The typed text is cleared after this long without a key.' },
-                { path: 'CONFIG.minLength', label: 'Shortest Command', type: 'number', def: 1, min: 1, step: 1, desc: 'How many characters Enter needs to run a command.' },
+                { path: 'CONFIG.minLength', label: 'Minimum Length', type: 'number', def: 1, min: 1, step: 1, desc: 'How many characters a command needs before Enter runs it.' },
                 { path: 'CONFIG.preventSpaceScroll', label: 'Space', type: 'select', def: 'smart', options: [['smart', 'Types While a Command Is Typed'], [true, 'Always Types'], [false, 'Scrolls the Page']],
                     desc: 'What the space bar does.' },
                 { path: 'CONFIG.showIndicator', label: 'Show Typed Text', type: 'bool', def: true, desc: 'Shows what you type on the screen.' },
-                { path: 'CONFIG.indicatorCorner', label: 'Place', type: 'select', def: 'top-center',
-                    options: [['top-left', 'Top Left'], ['top-center', 'Top Middle'], ['top-right', 'Top Right'], ['center-center', 'Middle'], ['bottom-left', 'Bottom Left'], ['bottom-center', 'Bottom Middle'], ['bottom-right', 'Bottom Right']],
+                { path: 'CONFIG.indicatorCorner', label: 'Position', type: 'select', def: 'top-center',
+                    options: [['top-left', 'Top Left'], ['top-center', 'Top Center'], ['top-right', 'Top Right'], ['center-center', 'Center'], ['bottom-left', 'Bottom Left'], ['bottom-center', 'Bottom Center'], ['bottom-right', 'Bottom Right']],
                     desc: 'Where the typed text shows.' },
-                { path: 'CONFIG.indicatorOffsetX', label: 'Sideways', type: 'text', def: '0vw', desc: 'Extra shift sideways, as a CSS length such as 2vw.' },
-                { path: 'CONFIG.indicatorOffsetY', label: 'Up and Down', type: 'text', def: '6vh', desc: 'Extra shift up or down, as a CSS length such as 6vh.' },
+                { path: 'CONFIG.indicatorOffsetX', label: 'Horizontal Offset', type: 'text', def: '0vw', desc: 'Extra horizontal offset, as a CSS length such as 2vw.' },
+                { path: 'CONFIG.indicatorOffsetY', label: 'Vertical Offset', type: 'text', def: '6vh', desc: 'Extra vertical offset, as a CSS length such as 6vh; positive values move it down.' },
                 { path: 'CONFIG.indicatorColor', label: 'Color', type: 'color', def: '#00ff41', desc: 'The color of the typed text.' }] }] }
     ];
+    // The header buttons that can be sorted. A button with a plugin id comes from that plugin, to show whether it is installed.
     var HEADER_BUTTONS = [
-        ['random', 'Random', 'part'], ['autoscroll', 'Autoscroll', 'part'], ['fullscreen', 'Fullscreen', 'part'],
-        ['globe', 'Globe', 'b37f9bfa-5337-424d-adbc-114488b2190d'], ['cinema', 'Cinema Project', 'a6e6b7d2-2f6a-4c7e-9c1a-6d1e3f9b8a11'],
-        ['destroy', 'Destroy', '9332385a-9eeb-4410-a224-b699c4e3098b']];
+        { key: 'random', name: 'Random' }, { key: 'autoscroll', name: 'Autoscroll' }, { key: 'fullscreen', name: 'Fullscreen' },
+        { key: 'globe', name: 'Globe', pluginId: 'b37f9bfa-5337-424d-adbc-114488b2190d' },
+        { key: 'cinema', name: 'Cinema Project', pluginId: 'a6e6b7d2-2f6a-4c7e-9c1a-6d1e3f9b8a11' },
+        { key: 'destroy', name: 'Destroy', pluginId: '9332385a-9eeb-4410-a224-b699c4e3098b' }];
 
     // ---------- state ----------
-    var values = {};          // part -> path -> value (only what differs from the default is saved)
-    var enabled = [];         // part keys that run
+    var values = {};          // script -> path -> value (only what differs from the default is saved)
+    var enabled = [];         // script keys that run
     var headerOrder = [];     // header button keys
     var installed = {};       // plugin id -> true
     var libraries = [];       // { Name, ItemId, CollectionType }
@@ -308,22 +312,22 @@
 
     function $(id) { return document.getElementById(id); }
     function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-    function allFields(part) {
+    function allFields(script) {
         var out = [];
-        SCHEMA.filter(function (p) { return p.part === part; }).forEach(function (p) {
+        SCHEMA.filter(function (p) { return p.script === script; }).forEach(function (p) {
             p.sections.forEach(function (s) { s.fields.forEach(function (f) { out.push(f); }); });
         });
         return out;
     }
     function plainId(id) { return String(id).replace(/-/g, '').toLowerCase(); }
     function same(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
-    function get(part, f) {
-        var v = values[part] && values[part][f.path];
+    function get(script, f) {
+        var v = values[script] && values[script][f.path];
         return v === undefined ? f.def : v;
     }
-    function set(part, path, value, def) {
-        values[part] = values[part] || {};
-        if (same(value, def)) delete values[part][path]; else values[part][path] = value;
+    function set(script, path, value, def) {
+        values[script] = values[script] || {};
+        if (same(value, def)) delete values[script][path]; else values[script][path] = value;
     }
 
     // ---------- drawing ----------
@@ -331,9 +335,9 @@
         return '<div class="esRow' + (check ? ' esRowCheckbox' : '') + '"><label class="esRowLabel">' + esc(label) + '</label>'
             + '<div class="esControl">' + control + '</div><div class="esDesc">' + esc(desc || '') + '</div></div>';
     }
-    function control(part, f) {
-        var id = 'es_' + part + '_' + f.path.replace(/\W/g, '_');
-        var v = get(part, f), a = ' id="' + id + '" data-part="' + part + '" data-path="' + esc(f.path) + '"';
+    function control(script, f) {
+        var id = 'es_' + script + '_' + f.path.replace(/\W/g, '_');
+        var v = get(script, f), a = ' id="' + id + '" data-script="' + script + '" data-path="' + esc(f.path) + '"';
         switch (f.type) {
             case 'bool':
                 return '<div class="esCheckLine"><input type="checkbox" class="esCheck"' + a + (v ? ' checked' : '') + '></div>';
@@ -363,13 +367,13 @@
         }
         return '';
     }
-    function drawOrder(box, part, f) {
-        var order = get(part, f).slice();
+    function drawOrder(box, script, f) {
+        var order = get(script, f).slice();
         f.items.forEach(function (it) { if (order.indexOf(it[0]) < 0) order.push(it[0]); });
         box.innerHTML = order.map(function (key, i) {
             var it = f.items.filter(function (x) { return x[0] === key; })[0];
             if (!it) return '';
-            var on = get(part, { path: it[2], def: true });
+            var on = get(script, { path: it[2], def: true });
             return '<div class="esOrderItem" data-key="' + esc(JSON.stringify(key)) + '"><input type="checkbox" class="esCheck" data-flag="' + esc(it[2]) + '"' + (on ? ' checked' : '') + '>'
                 + '<span class="esOrderName">' + esc(it[1]) + '</span>'
                 + '<button type="button" class="esArrow" data-move="-1"' + (i === 0 ? ' disabled' : '') + '>&#9650;</button>'
@@ -379,9 +383,9 @@
     function drawHeaderOrder() {
         var box = $('esHeaderOrder');
         box.innerHTML = headerOrder.map(function (key, i) {
-            var b = HEADER_BUTTONS.filter(function (x) { return x[0] === key; })[0];
-            var state = b[2] === 'part' ? (enabled.indexOf(key) >= 0 ? '' : 'switched off') : (installed[plainId(b[2])] ? '' : 'not installed');
-            return '<div class="esOrderItem' + (state ? ' esOrderMissing' : '') + '" data-key="' + key + '"><span class="esOrderName">' + esc(b[1]) + '</span>'
+            var b = HEADER_BUTTONS.filter(function (x) { return x.key === key; })[0];
+            var state = b.pluginId ? (installed[plainId(b.pluginId)] ? '' : 'not installed') : (enabled.indexOf(key) >= 0 ? '' : 'turned off');
+            return '<div class="esOrderItem' + (state ? ' esOrderMissing' : '') + '" data-key="' + esc(key) + '"><span class="esOrderName">' + esc(b.name) + '</span>'
                 + '<span class="esOrderState">' + state + '</span>'
                 + '<button type="button" class="esArrow" data-hmove="-1"' + (i === 0 ? ' disabled' : '') + '>&#9650;</button>'
                 + '<button type="button" class="esArrow" data-hmove="1"' + (i === headerOrder.length - 1 ? ' disabled' : '') + '>&#9660;</button></div>';
@@ -389,43 +393,43 @@
     }
 
     function drawTabs() {
-        var tabs = [['general', 'General']].concat(SCHEMA.map(function (p) { return [p.part, p.tab]; }));
+        var tabs = [['general', 'General']].concat(SCHEMA.map(function (p) { return [p.script, p.tab]; }));
         $('esTabBar').innerHTML = tabs.map(function (t, i) {
             return (i ? '<span class="esTabSeparator" aria-hidden="true"></span>' : '')
                 + '<button type="button" class="esTabButton" data-tab="' + t[0] + '">' + esc(t[1]) + '</button>';
         }).join('');
 
         var html = '<div class="esTabPage" data-tabpage="general"><div class="esHeaderRow"><h3>General</h3></div>'
-            + '<p class="esTabDesc">Which additions run, and the order of the header buttons. Essentials needs the File Transformation plugin; '
-            + 'turn off copies of these scripts in the JavaScript Injector, they do not know the settings here.</p>'
+            + '<p class="esTabDesc">Which additions run, and the order of the header buttons. Essentials needs the File Transformation plugin. '
+            + 'If JavaScript Injector runs copies of these scripts, turn them off there; those copies ignore the settings here.</p>'
             + '<p class="esStatus esError" id="esInjectorWarning" hidden></p>'
             + '<div class="esSubheading">Additions</div>'
             + SCHEMA.map(function (p) {
-                return row(p.title, '<label class="esCheckLine"><input type="checkbox" class="esCheck" data-enable="' + p.part + '"' + (enabled.indexOf(p.part) >= 0 ? ' checked' : '') + '>'
+                return row(p.title, '<label class="esCheckLine"><input type="checkbox" class="esCheck" data-enable="' + p.script + '"' + (enabled.indexOf(p.script) >= 0 ? ' checked' : '') + '>'
                     + '<span>' + esc(p.desc) + '</span></label>', '', true);
             }).join('')
             + '<div class="esSubheading">Header Buttons</div>'
-            + row('Order', '<div class="esOrder" id="esHeaderOrder"></div>', 'Left to right; a button that is switched off or whose plugin is not installed is left out.')
-            + '<div class="esBox"><h3>Backup / restore via code</h3>'
+            + row('Order', '<div class="esOrder" id="esHeaderOrder"></div>', 'Left to right; a button that is turned off or whose plugin is not installed is left out.')
+            + '<div class="esBox"><h3>Backup / Restore via Code</h3>'
             + '<textarea id="esCodeBox" class="esCodeArea" placeholder="Click &quot;Generate&quot; to create a backup code, or paste a previously saved one here to restore it."></textarea>'
             + '<div class="esButtonRow"><button type="button" class="esActionButton esBlue" id="esGenerate">Generate</button>'
-            + '<button type="button" class="esActionButton" id="esCopy" disabled>Copy to clipboard</button>'
+            + '<button type="button" class="esActionButton" id="esCopy" disabled>Copy to Clipboard</button>'
             + '<button type="button" class="esActionButton esRed" id="esImport">Import</button>'
-            + '<button type="button" class="esActionButton esBlue" id="esSaveAll">Save all settings</button></div>'
+            + '<button type="button" class="esActionButton esBlue" id="esSaveAll">Save All Settings</button></div>'
             + '<div id="esCodeStatus" class="esStatus"></div></div>'
-            + '<div class="esBox esWarnBox"><div class="esWarnTitle">Restore all tabs to script defaults</div>'
-            + '<p class="esTabDesc">This resets every setting on every tab, not just General.</p>'
-            + '<button type="button" class="esActionButton" id="esRestoreAll">Restore all tabs</button></div></div>';
+            + '<div class="esBox esWarnBox"><div class="esWarnTitle">Restore All Defaults</div>'
+            + '<p class="esTabDesc">Turns every addition back on, restores the default header order and resets every setting on every tab.</p>'
+            + '<button type="button" class="esActionButton" id="esRestoreAll">Restore All</button></div></div>';
 
         SCHEMA.forEach(function (p) {
-            html += '<div class="esTabPage" data-tabpage="' + p.part + '"><div class="esHeaderRow"><h3>' + esc(p.title) + '</h3>'
-                + (p.sections.length ? '<button type="button" class="esActionButton" data-restore="' + p.part + '">Restore defaults</button>' : '') + '</div>'
+            html += '<div class="esTabPage" data-tabpage="' + p.script + '"><div class="esHeaderRow"><h3>' + esc(p.title) + '</h3>'
+                + (p.sections.length ? '<button type="button" class="esActionButton" data-restore="' + p.script + '">Restore Defaults</button>' : '') + '</div>'
                 + '<p class="esTabDesc">' + esc(p.desc) + '</p>';
-            if (!p.sections.length) html += '<p class="esTabDesc">It has no settings; it is switched on and off on the General tab.</p>';
+            if (!p.sections.length) html += '<p class="esTabDesc">No settings. Turn it on or off on the General tab.</p>';
             p.sections.forEach(function (s, i) {
-                var body = s.fields.map(function (f) { return row(f.label, control(p.part, f), f.desc, f.type === 'bool'); }).join('');
+                var body = s.fields.map(function (f) { return row(f.label, control(p.script, f), f.desc, f.type === 'bool'); }).join('');
                 if (s.advanced) {
-                    var key = p.part + '_' + i;
+                    var key = p.script + '_' + i;
                     html += '<div class="esCollapseHeader" data-collapse="' + key + '"><span class="esChevron">&#9654;</span><span>' + esc(s.title) + '</span></div>'
                         + '<div class="esCollapseBody" data-collapsebody="' + key + '">' + body + '</div>';
                 } else {
@@ -436,15 +440,15 @@
         });
         $('esPages').innerHTML = html;
         page.querySelectorAll('[data-order]').forEach(function (box) {
-            var f = allFields(box.dataset.part).filter(function (x) { return x.path === box.dataset.path; })[0];
-            drawOrder(box, box.dataset.part, f);
+            var f = allFields(box.dataset.script).filter(function (x) { return x.path === box.dataset.path; })[0];
+            drawOrder(box, box.dataset.script, f);
         });
         drawHeaderOrder();
-        greyTabs();
+        grayTabs();
     }
-    function greyTabs() {
+    function grayTabs() {
         page.querySelectorAll('.esTabButton').forEach(function (b) {
-            b.classList.toggle('esTabGreyed', b.dataset.tab !== 'general' && enabled.indexOf(b.dataset.tab) < 0);
+            b.classList.toggle('esTabGrayed', b.dataset.tab !== 'general' && enabled.indexOf(b.dataset.tab) < 0);
         });
     }
     function showTab(key) {
@@ -458,20 +462,20 @@
         return isNaN(n) ? null : n;
     }
     function readField(el) {
-        var part = el.dataset.part, f = allFields(part).filter(function (x) { return x.path === el.dataset.path; })[0];
+        var script = el.dataset.script, f = allFields(script).filter(function (x) { return x.path === el.dataset.path; })[0];
         if (!f) return;
         var v;
         switch (f.type) {
             case 'bool': v = el.checked; break;
             case 'number':
                 v = parseNumber(el.value);
-                if (v === null) { el.value = get(part, f); return; }
+                if (v === null) { el.value = get(script, f); return; }
                 if (f.min != null && v < f.min) v = f.min;
                 if (f.max != null && v > f.max) v = f.max;
                 break;
             case 'numberList':
                 v = el.value.split(/[,;\s]+/).map(parseNumber).filter(function (n) { return n !== null; });
-                if (!valid(f, v)) { el.value = get(part, f).join(', '); return; }
+                if (!valid(f, v)) { el.value = get(script, f).join(', '); return; }
                 break;
             case 'pairs':
                 v = el.value.split('\n').map(function (l) { var i = l.indexOf('='); return i < 0 ? null : { from: l.slice(0, i).trim(), to: l.slice(i + 1).trim() }; })
@@ -480,22 +484,22 @@
             case 'select': case 'library': v = JSON.parse(el.value); break;
             default: v = el.value;
         }
-        set(part, f.path, v, f.def);
+        set(script, f.path, v, f.def);
     }
     function readOrder(box) {
-        var part = box.dataset.part, f = allFields(part).filter(function (x) { return x.path === box.dataset.path; })[0];
+        var script = box.dataset.script, f = allFields(script).filter(function (x) { return x.path === box.dataset.path; })[0];
         var keys = [].map.call(box.querySelectorAll('.esOrderItem'), function (it) { return JSON.parse(it.dataset.key); });
-        set(part, f.path, keys, f.def);
-        box.querySelectorAll('[data-flag]').forEach(function (c) { set(part, c.dataset.flag, c.checked, true); });
+        set(script, f.path, keys, f.def);
+        box.querySelectorAll('[data-flag]').forEach(function (c) { set(script, c.dataset.flag, c.checked, true); });
     }
 
     page.addEventListener('change', function (e) {
         var el = e.target;
         if (el.dataset.enable) {
-            enabled = SCHEMA.map(function (p) { return p.part; }).filter(function (k) {
+            enabled = SCHEMA.map(function (p) { return p.script; }).filter(function (k) {
                 var c = page.querySelector('[data-enable="' + k + '"]'); return c && c.checked;
             });
-            greyTabs();
+            grayTabs();
             drawHeaderOrder();
         } else if (el.dataset.flag) {
             readOrder(el.closest('[data-order]'));
@@ -517,7 +521,7 @@
             var sibling = t.dataset.move < 0 ? item.previousElementSibling : item.nextElementSibling;
             if (sibling) box.insertBefore(item, t.dataset.move < 0 ? sibling : sibling.nextElementSibling);
             readOrder(box);
-            drawOrder(box, box.dataset.part, allFields(box.dataset.part).filter(function (x) { return x.path === box.dataset.path; })[0]);
+            drawOrder(box, box.dataset.script, allFields(box.dataset.script).filter(function (x) { return x.path === box.dataset.path; })[0]);
             return;
         }
         if (t.dataset.hmove) {
@@ -528,12 +532,12 @@
         if (t.dataset.restore) { values[t.dataset.restore] = {}; drawTabs(); showTab(t.dataset.restore); return; }
         if (t.id === 'esRestoreAll') {
             values = {};
-            enabled = SCHEMA.map(function (p) { return p.part; });
-            headerOrder = HEADER_BUTTONS.map(function (b) { return b[0]; });
+            enabled = SCHEMA.map(function (p) { return p.script; });
+            headerOrder = HEADER_BUTTONS.map(function (b) { return b.key; });
             drawTabs(); showTab('general'); return;
         }
         if (t.id === 'esGenerate') {
-            $('esCodeBox').value = btoa(unescape(encodeURIComponent(JSON.stringify({ EnabledParts: enabled, HeaderOrder: headerOrder, Settings: values }))));
+            $('esCodeBox').value = btoa(unescape(encodeURIComponent(JSON.stringify({ EnabledScripts: enabled, HeaderOrder: headerOrder, Settings: values }))));
             $('esCopy').disabled = false;
             status('Code generated.', true); return;
         }
@@ -577,43 +581,46 @@
         return false;
     }
     function apply(config) {
-        var known = SCHEMA.map(function (p) { return p.part; });
-        enabled = (config.EnabledParts || known).filter(function (k) { return known.indexOf(k) >= 0; });
-        var keys = HEADER_BUTTONS.map(function (b) { return b[0]; });
+        var known = SCHEMA.map(function (p) { return p.script; });
+        enabled = (config.EnabledScripts || known).filter(function (k) { return known.indexOf(k) >= 0; });
+        var keys = HEADER_BUTTONS.map(function (b) { return b.key; });
         headerOrder = (config.HeaderOrder || []).filter(function (k) { return keys.indexOf(k) >= 0; });
         keys.forEach(function (k) { if (headerOrder.indexOf(k) < 0) headerOrder.push(k); });
         var settings = config.Settings;
         if (typeof settings === 'string') { try { settings = JSON.parse(settings || '{}'); } catch (e) { settings = {}; } }
         values = {};
-        Object.keys(settings || {}).forEach(function (part) {
-            if (known.indexOf(part) < 0) return;
+        Object.keys(settings || {}).forEach(function (script) {
+            if (known.indexOf(script) < 0) return;
             var fields = {};
-            allFields(part).forEach(function (f) {
+            allFields(script).forEach(function (f) {
                 fields[f.path] = f;
                 if (f.type === 'order') f.items.forEach(function (it) { fields[it[2]] = { type: 'bool' }; });
             });
-            Object.keys(settings[part] || {}).forEach(function (path) {
+            Object.keys(settings[script] || {}).forEach(function (path) {
                 var f = Object.prototype.hasOwnProperty.call(fields, path) ? fields[path] : null;
-                if (f && valid(f, settings[part][path])) { values[part] = values[part] || {}; values[part][path] = settings[part][path]; }
+                if (f && valid(f, settings[script][path])) { values[script] = values[script] || {}; values[script][path] = settings[script][path]; }
             });
         });
     }
 
-    // Copies of these scripts in the JavaScript Injector run first and ignore the settings here: name them.
-    var SCRIPT_SIGNS = [['Random', 'randomMovieButton'], ['Autoscroll', 'jf-scroll-btn'], ['Fullscreen', 'jf-fullscreen-btn'],
-        ['Details Group Items Extended', 'data-omdb-row'], ['Details Group Items Sets', 'data-collection-row'], ['MediaInfo Ratings', 'MDBListRatings'],
-        ['Hover Preview Tiles', '__jfCollectionPreviewLoaded'], ['Keyboard Library Navigation', '__jfKeyboardLibraryNav']];
+    // The global flag each script sets so it runs only once; found in a JavaScript Injector entry, it shows that entry
+    // runs a copy of that script. The same flags are in essentials.js, keep both lists in step.
+    var LOAD_FLAGS = {
+        random: '__jfRandomButton', autoscroll: '__jfAutoscrollButton', fullscreen: '__jfFullscreenButton',
+        detailsGroupItemsExtended: '__jfDetailsGroupItemsExtended', detailsGroupItemsSets: '__jfDetailsGroupItemsSets',
+        mediaInfoRatings: '__jfMediaInfoRatings', hoverPreviewTiles: '__jfCollectionPreviewLoaded', keyboardLibraryNavigation: '__jfKeyboardLibraryNav'
+    };
     function warnInjector(plugins) {
         var injector = plugins.filter(function (p) { return /JavaScript Injector/i.test(p.Name) && p.Status === 'Active'; })[0];
         if (!injector) return;
         ApiClient.getPluginConfiguration(injector.Id).then(function (c) {
             var found = (c.CustomJavaScripts || []).filter(function (s) { return s.Enabled; }).map(function (s) {
-                var sign = SCRIPT_SIGNS.filter(function (x) { return (s.Script || '').indexOf(x[1]) >= 0; })[0];
-                return sign ? s.Name + ' (' + sign[0] + ')' : null;
+                var copy = SCHEMA.filter(function (p) { return (s.Script || '').indexOf(LOAD_FLAGS[p.script]) >= 0; })[0];
+                return copy ? s.Name + ' (' + copy.title + ')' : null;
             }).filter(Boolean);
             var box = $('esInjectorWarning');
             if (box && found.length) {
-                box.textContent = 'The JavaScript Injector still runs ' + found.join(', ') + '. Turn these entries off, or the settings here do not reach those scripts.';
+                box.textContent = 'JavaScript Injector still runs ' + found.join(', ') + '. Turn these entries off; they ignore the settings here.';
                 box.hidden = false;
             }
         }, function () {});
@@ -650,10 +657,10 @@
         page.querySelectorAll('[data-path]:not([data-order])').forEach(readField);
         Dashboard.showLoadingMsg();
         ApiClient.getPluginConfiguration(EssentialsConfig.pluginUniqueId).then(function (config) {
-            config.EnabledParts = enabled;
+            config.EnabledScripts = enabled;
             config.HeaderOrder = headerOrder;
             var saved = {};
-            Object.keys(values).forEach(function (part) { if (Object.keys(values[part]).length) saved[part] = values[part]; });
+            Object.keys(values).forEach(function (script) { if (Object.keys(values[script]).length) saved[script] = values[script]; });
             config.Settings = JSON.stringify(saved);
             return ApiClient.updatePluginConfiguration(EssentialsConfig.pluginUniqueId, config);
         }).then(function (result) {

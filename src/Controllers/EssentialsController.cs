@@ -1,5 +1,6 @@
 using System.Net.Mime;
 using System.Reflection;
+using Jellyfin.Plugin.Essentials.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ namespace Jellyfin.Plugin.Essentials.Controllers;
 [Route("Essentials")]
 public class EssentialsController : ControllerBase
 {
-    /// <summary>The loader that starts the scripts; anonymous, it carries no settings.</summary>
+    /// <summary>Serves the loader script; needs no sign-in, since it holds no settings.</summary>
     [HttpGet("essentials.js")]
     public ActionResult GetLoader()
     {
@@ -24,15 +25,16 @@ public class EssentialsController : ControllerBase
         return File(stream, "text/javascript");
     }
 
-    /// <summary>What every page may know before sign-in: which scripts run and the order of the header buttons.</summary>
+    /// <summary>Serves page.js, the settings every page may know before sign-in.</summary>
     [HttpGet("page.js")]
     public ActionResult GetPageSettings()
     {
         Response.Headers.CacheControl = "no-store";
-        return Content("window.JellyfinEssentials=" + FileTransformation.IndexHtml.PageSettings() + ";", "text/javascript");
+        var config = Plugin.Instance?.Configuration ?? new PluginConfiguration();
+        return Content("window.JellyfinEssentials=" + ClientSettings.ForPage(config) + ";", "text/javascript");
     }
 
-    /// <summary>The scripts' settings, for every signed-in user; some hold keys, so not before sign-in.</summary>
+    /// <summary>The script settings, for every signed-in user; some hold keys, so not before sign-in.</summary>
     [HttpGet("ClientConfiguration")]
     [Authorize]
     [Produces(MediaTypeNames.Application.Json)]
@@ -45,7 +47,7 @@ public class EssentialsController : ControllerBase
         }
 
         Response.Headers.CacheControl = "no-store";
-        return Ok(new { settings = Settings.ForClient(config) });
+        return Ok(new { settings = ClientSettings.ForScripts(config) });
     }
 
 #if LOCAL_SCRIPTS
@@ -53,15 +55,15 @@ public class EssentialsController : ControllerBase
     [HttpGet("local/{key}.js")]
     public ActionResult GetLocalScript(string key)
     {
-        var part = Parts.All.FirstOrDefault(p => p.Key == key);
+        var script = Scripts.All.FirstOrDefault(s => s.Key == key);
         var folder = typeof(Plugin).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
             .FirstOrDefault(a => a.Key == "LocalScripts")?.Value;
-        if (part is null || string.IsNullOrEmpty(folder))
+        if (script is null || string.IsNullOrEmpty(folder))
         {
             return NotFound();
         }
 
-        var path = Path.Combine(folder, part.Repository, part.File);
+        var path = Path.Combine(folder, script.Repository, script.File);
         if (!System.IO.File.Exists(path))
         {
             return NotFound();

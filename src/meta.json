@@ -1,6 +1,6 @@
 {
   "category": "General",
-  "changelog": "1.0.0.0: the Random, Autoscroll and Fullscreen buttons, Details Group Items Extended and Sets, MediaInfo Ratings, Hover Preview Tiles and Keyboard Library Navigation in one plugin, each with its own switch and settings; one order for the header buttons, including those of Globe, Cinema Project and Destroy.",
+  "changelog": "1.0.0.0: first release: Random Button Extended, Autoscroll Button, Fullscreen Button, Details Group Items Extended and Sets, MediaInfo Ratings Enhanced, Hover Preview Tiles Extended and Keyboard Library Navigation, each with its own switch and settings, and one order for all header buttons.",
   "description": "Eight additions for Jellyfin Web in one plugin, each with its own switch and settings, and one order for the header buttons.",
   "guid": "55e8663a-5672-4656-a3ec-a900d634b73b",
   "name": "Essentials",
