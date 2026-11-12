@@ -1,0 +1,29 @@
+[
+  {
+    "guid": "55e8663a-5672-4656-a3ec-a900d634b73b",
+    "name": "Essentials",
+    "description": "Eight additions for Jellyfin Web in one plugin, each with its own switch and settings, and one order for the header buttons.",
+    "overview": "Random, Autoscroll and Fullscreen buttons, richer detail pages, ratings, hover previews and keyboard navigation in one plugin.",
+    "owner": "chrissix666",
+    "category": "General",
+    "imageUrl": "https://raw.githubusercontent.com/chrissix666/Jellyfin-Essentials/main/logo.png",
+    "versions": [
+      {
+        "version": "2.0.0.0",
+        "changelog": "Release for Jellyfin 12.0+",
+        "targetAbi": "12.0.0.0",
+        "sourceUrl": "https://github.com/chrissix666/Jellyfin-Essentials/releases/download/v2.0.0.0/Essentials_2.0.0.0_jellyfin-12.x.zip",
+        "checksum": "44b125e73b5398079a9889840c0e97b0",
+        "timestamp": "2026-11-12T13:26:24Z"
+      },
+      {
+        "version": "1.0.0.0",
+        "changelog": "Release for Jellyfin 10.10.7",
+        "targetAbi": "10.10.7.0",
+        "sourceUrl": "https://github.com/chrissix666/Jellyfin-Essentials/releases/download/v1.0.0.0/Essentials_1.0.0.0_jellyfin-10.10.7.zip",
+        "checksum": "171853537889664879aefc61b6c2c1a9",
+        "timestamp": "2026-11-12T13:26:24Z"
+      }
+    ]
+  }
+]
