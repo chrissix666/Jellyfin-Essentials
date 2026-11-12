@@ -20,7 +20,7 @@
   }
 
   // Each script sets a global flag so it runs only once. If the flag is already set, another copy (usually from
-  // JavaScript Injector) is running, and the settings here would not reach it. The same flags are in the admin page.
+  // JavaScript Injector) is running, and the settings here would not reach it.
   const LOAD_FLAGS = {
     random: '__jfRandomButton', autoscroll: '__jfAutoscrollButton', fullscreen: '__jfFullscreenButton',
     detailsGroupItemsExtended: '__jfDetailsGroupItemsExtended', detailsGroupItemsSets: '__jfDetailsGroupItemsSets',

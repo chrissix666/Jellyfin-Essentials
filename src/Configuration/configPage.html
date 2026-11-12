@@ -12,16 +12,16 @@
     #EssentialsConfigPage h2 { font-size: 1.5em; font-weight: 400; margin: .3em 0 .2em; color: #fff; }
     #EssentialsConfigPage h3 { font-size: 1.17em; font-weight: 400; color: #fff; margin: 0; }
     #EssentialsConfigPage .esIntro { font-size: 11px; color: #999; margin: 0 0 .8em; }
-    #EssentialsConfigPage #esTabBar { display: flex; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.15); margin-bottom: 1em; }
-    #EssentialsConfigPage .esTabButton { flex: 1 1 auto; min-width: 68px; text-align: center; padding: 10px 4px; font-size: 12px; font-family: inherit; cursor: pointer;
-        opacity: 0.65; border: none; border-bottom: 2px solid transparent; background: none; color: inherit; white-space: nowrap; }
+    #EssentialsConfigPage #esTabBar { display: flex; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.15); margin-bottom: 6px; }
+    #EssentialsConfigPage .esTabButton { flex: 1; min-width: 68px; text-align: center; padding: 10px 2px; font-size: 10.5px; font-family: inherit; cursor: pointer;
+        opacity: 0.65; border: none; border-bottom: 2px solid transparent; background: none; color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #EssentialsConfigPage .esTabButton.esTabActive { opacity: 1; border-bottom: 2px solid #00a4dc; font-weight: 500; }
     #EssentialsConfigPage .esTabButton.esTabGrayed { opacity: 0.35; }
     #EssentialsConfigPage .esTabSeparator { flex: 0 0 2px; width: 2px; height: 21px; align-self: center; background: rgba(255,255,255,0.15); }
     #EssentialsConfigPage .esTabPage { display: none; }
     #EssentialsConfigPage .esTabPage.esTabPageActive { display: block; }
     #EssentialsConfigPage .esHeaderRow { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
-    #EssentialsConfigPage .esTabDesc { font-size: 11px; color: #999; margin: 0 0 10px; }
+    #EssentialsConfigPage .esTabDesc { font-size: 10.5px; line-height: 14px; color: #777; margin: 0; min-height: 60px; padding-top: 4px; }
     #EssentialsConfigPage .esSubheading { font-size: 13px; font-weight: 500; color: #fff; margin: 14px 0 4px; }
     #EssentialsConfigPage .esRow { display: grid; grid-template-columns: 246px 1fr; align-items: center; padding: 2px 0;
         border-top: 1px solid rgba(255,255,255,0.08); column-gap: 8px; }
@@ -29,12 +29,16 @@
     #EssentialsConfigPage .esRow > .esControl { grid-row: 1; grid-column: 2; }
     #EssentialsConfigPage .esDesc { grid-row: 2; grid-column: 1 / -1; margin: 0; font-size: 10.5px; line-height: 14px; min-height: 14px; color: #777;
         padding: 4px 0 1px 254px; white-space: normal; overflow-wrap: break-word; }
-    #EssentialsConfigPage .esRow.esRowCheckbox { min-height: 46px; }
+    #EssentialsConfigPage .esRow.esRowCheckbox { height: 46px; }
+    #EssentialsConfigPage .esRow.esRowCheckbox .esRowLabel { grid-row: 1; }
+    #EssentialsConfigPage .esFieldDisabled { opacity: 0.35; pointer-events: none; }
+    #EssentialsConfigPage .esTabLocked .esRow, #EssentialsConfigPage .esTabLocked .esCollapseHeader, #EssentialsConfigPage .esTabLocked .esSubheading { opacity: 0.35; pointer-events: none; }
+    #EssentialsConfigPage .esUnit { font-size: 12px; color: #999; }
     #EssentialsConfigPage .esSelect, #EssentialsConfigPage .esText { max-width: 320px; width: 100%; box-sizing: border-box; height: 30px; background: rgba(255,255,255,0.05);
         border: 1px solid rgba(255,255,255,0.2); border-radius: 3px; color: inherit; padding: 0 8px; font-size: 13px; font-family: inherit; }
     #EssentialsConfigPage .esSelect option { background: #1c1c1c; color: #eee; }
     #EssentialsConfigPage .esText:focus, #EssentialsConfigPage .esNumber:focus, #EssentialsConfigPage .esArea:focus { outline: none; border-color: #00a4dc; }
-    #EssentialsConfigPage .esNumber { width: 110px; box-sizing: border-box; height: 30px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
+    #EssentialsConfigPage .esNumber { width: 143px; box-sizing: border-box; height: 30px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
         border-radius: 3px; color: inherit; padding: 0 8px; font-size: 13px; font-family: inherit; }
     #EssentialsConfigPage .esArea { max-width: 320px; width: 100%; min-height: 64px; box-sizing: border-box; background: rgba(255,255,255,0.05);
         border: 1px solid rgba(255,255,255,0.2); border-radius: 3px; color: inherit; padding: 6px 8px; font-size: 13px; font-family: inherit; }
@@ -56,36 +60,50 @@
     #EssentialsConfigPage .esArrow { width: 26px; height: 24px; border: 1px solid rgba(255,255,255,0.25); border-radius: 3px; background: rgba(255,255,255,0.08);
         color: #eee; cursor: pointer; font-size: 11px; padding: 0; }
     #EssentialsConfigPage .esArrow:disabled { opacity: .3; cursor: default; }
-    #EssentialsConfigPage .esCollapseHeader { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 0; margin-top: 8px;
-        border-top: 1px solid rgba(255,255,255,0.08); font-size: 13px; font-weight: 500; color: #fff; user-select: none; }
+    #EssentialsConfigPage .esCollapseHeader { display: flex; align-items: center; gap: 8px; padding: 10px 0 4px; cursor: pointer; font-weight: 500; font-size: 12.5px;
+        user-select: none; }
     #EssentialsConfigPage .esChevron { display: inline-block; transition: transform .15s ease; font-size: 10px; }
     #EssentialsConfigPage .esCollapseHeader.esOpen .esChevron { transform: rotate(90deg); }
     #EssentialsConfigPage .esCollapseBody { display: none; padding-left: 0; }
     #EssentialsConfigPage .esCollapseBody.esOpen { display: block; }
-    #EssentialsConfigPage .esActionButton { min-width: 112px; height: 29px; font-size: 12px; border: 1px solid rgba(255,255,255,.25); border-radius: 3px;
-        background: rgba(255,255,255,.08); color: #eee; cursor: pointer; padding: 0 10px; font-family: inherit; }
+    #EssentialsConfigPage .esActionButton { box-sizing: border-box; width: 112px; height: 29px; line-height: 27px; padding: 0; text-align: center; font-size: 12px;
+        border: 1px solid rgba(255,255,255,.25); border-radius: 3px; background: rgba(255,255,255,.08); color: #eee; cursor: pointer; font-family: inherit; }
     #EssentialsConfigPage .esActionButton:hover { background: rgba(255,255,255,.18); }
-    #EssentialsConfigPage .esSave { margin-top: 14px; }
-    #EssentialsConfigPage .esSave .button-submit { background: #00a4dc; color: #fff; }
-    #EssentialsConfigPage .esSave .button-submit:hover { background: #0090c2; }
-    #EssentialsConfigPage .esBox { margin-top: 18px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.15); }
-    #EssentialsConfigPage .esWarnBox { border-top-color: rgba(255,80,80,.3); }
-    #EssentialsConfigPage .esWarnTitle { color: #cc8888; font-size: 11px; }
-    #EssentialsConfigPage .esCodeArea { width: 100%; min-height: 70px; box-sizing: border-box; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 3px; color: inherit; padding: 6px 8px; font-size: 12px; font-family: monospace; margin: 6px 0; }
-    #EssentialsConfigPage .esButtonRow { display: flex; gap: 8px; flex-wrap: wrap; }
-    #EssentialsConfigPage .esButtonRow button { flex: 1 1 0; }
-    #EssentialsConfigPage .esBlue { background: #00a4dc !important; border-color: #00a4dc !important; color: #fff !important; }
-    #EssentialsConfigPage .esRed { background: #3a1f1f !important; border-color: #6b3535 !important; color: #e0a0a0 !important; }
-    #EssentialsConfigPage .esStatus { font-size: 10.5px; min-height: 14px; margin-top: 4px; }
+    #EssentialsConfigPage .esActionButton:disabled { opacity: 0.5; cursor: default; }
+    #EssentialsConfigPage .esSave { margin-top: 10px; }
+    #EssentialsConfigPage button.esAccentButton { background: #00a4dc; border-color: #00a4dc; color: #fff; }
+    #EssentialsConfigPage button.esAccentButton:hover { background: #0090c2; }
+    #EssentialsConfigPage .esRestoreAllBox { margin-top: 20px; padding-top: 12px; border-top: 1px solid rgba(255,80,80,0.3); }
+    #EssentialsConfigPage .esWarnTitle { font-size: 11px; color: #cc8888; font-weight: 500; margin-bottom: 4px; }
+    #EssentialsConfigPage .esWarnDesc { font-size: 10.5px; color: #999; margin-bottom: 8px; }
+    #EssentialsConfigPage .esBackupBox { max-width: 54em; margin: 20px 0 0; padding: 16px 0 0; border-top: 1px solid rgba(255,255,255,0.15); }
+    #EssentialsConfigPage .esBackupBox h3 { margin: 0 0 10px; font-size: 14px; font-weight: 500; }
+    #EssentialsConfigPage .esCodeArea { display: block; width: 100%; height: 70px; background: #1c1c1c; border: 1px solid #333; border-radius: 4px; color: #ccc;
+        font-family: monospace; font-size: 11px; line-height: 1.4; padding: 8px; box-sizing: border-box; resize: vertical; margin-bottom: 10px; }
+    #EssentialsConfigPage .esCodeArea:focus { outline: none; border-color: #00a4dc; }
+    #EssentialsConfigPage .esButtonRow { display: flex; gap: 8px; width: 100%; flex-wrap: wrap; }
+    #EssentialsConfigPage .esButtonRow button { flex: 1; min-width: 120px; text-align: center; justify-content: center; font-size: 12.5px; padding: 8px 4px;
+        border: 1px solid rgba(255,255,255,.25); border-radius: 3px; color: #eee; cursor: pointer; font-family: inherit; }
+    #EssentialsConfigPage .esButtonRow button:disabled { opacity: 0.5; cursor: default; }
+    #EssentialsConfigPage .esCopyButton { background: #2a2a2a; }
+    #EssentialsConfigPage .esImportButton { background: #3a1f1f !important; border-color: #6b3535 !important; color: #e0a0a0 !important; }
+    #EssentialsConfigPage .esStatus { font-size: 10.5px; min-height: 14px; margin-top: 8px; }
     #EssentialsConfigPage .esStatus.esOk { color: #6dcf6d; }
     #EssentialsConfigPage .esStatus.esError { color: #e07a7a; }
+    /* The page keeps Jellyfin's form width: 804px (54em at the 14.888889px base), from 50em of window width on. */
+    #EssentialsConfigPage h2, #EssentialsConfigPage .esIntro, #EssentialsConfigPage #esTabBar, #EssentialsConfigForm { min-width: 54em; }
+    @media all and (min-width: 50em) {
+        #EssentialsConfigPage h2, #EssentialsConfigPage .esIntro, #EssentialsConfigPage #esTabBar, #EssentialsConfigForm { max-width: 54em; }
+    }
     #EssentialsConfigPage .content-primary { container-type: inline-size; container-name: espage; }
     @container espage (max-width: 803.98px) {
-        #EssentialsConfigPage .esRow { grid-template-columns: 1fr; }
-        #EssentialsConfigPage .esRowLabel { grid-row: auto; }
-        #EssentialsConfigPage .esRow > .esControl { grid-row: auto; grid-column: 1; }
-        #EssentialsConfigPage .esDesc { padding-left: 0; }
+        #EssentialsConfigPage h2, #EssentialsConfigPage .esIntro, #EssentialsConfigPage #esTabBar, #EssentialsConfigForm { min-width: 0; }
+        #EssentialsConfigPage .esRow { grid-template-columns: minmax(0, 1fr); row-gap: 4px; padding: 6px 0; }
+        #EssentialsConfigPage .esRow.esRowCheckbox { height: auto; }
+        #EssentialsConfigPage .esRowLabel { grid-row: 1; }
+        #EssentialsConfigPage .esRow > .esControl { grid-row: 2; grid-column: 1; }
+        #EssentialsConfigPage .esDesc { grid-row: 3; padding-left: 0; }
+        #EssentialsConfigPage .esHeaderRow { flex-wrap: wrap; }
         #EssentialsConfigPage .esTabSeparator { display: none; }
     }
 </style>
@@ -94,13 +112,28 @@
 <div id="esTabBar"></div>
 <form id="EssentialsConfigForm">
     <div id="esPages"></div>
-    <div class="esSave"><button is="emby-button" type="submit" class="raised button-submit block emby-button"><span>Save</span></button></div>
+    <div class="esSave"><button is="emby-button" type="submit" class="raised button-submit block emby-button esAccentButton"><span>Save</span></button></div>
+    <div class="esTabPage" data-tabpage="general">
+        <div class="esBackupBox">
+            <h3>Backup / restore via code</h3>
+            <textarea id="esCodeBox" class="esCodeArea" placeholder="Click &quot;Generate&quot; to create a backup code, or paste a previously saved one here to restore it."></textarea>
+            <div class="esButtonRow">
+                <button type="button" is="emby-button" id="esGenerate" class="emby-button esAccentButton">Generate</button>
+                <button type="button" is="emby-button" id="esCopy" class="emby-button esCopyButton" disabled>Copy to clipboard</button>
+                <button type="button" is="emby-button" id="esImport" class="emby-button esImportButton">Import</button>
+                <button type="button" is="emby-button" id="esSaveAll" class="emby-button esAccentButton">Save all settings</button>
+            </div>
+            <div id="esCodeStatus" class="esStatus"></div>
+        </div>
+    </div>
 </form>
 </div></div>
 <script type="text/javascript">
 (function () {
     var EssentialsConfig = { pluginUniqueId: '55e8663a-5672-4656-a3ec-a900d634b73b' };
-    var page = document.getElementById('EssentialsConfigPage');
+    var page = document.querySelector('#EssentialsConfigPage:not([data-wired])');
+    if (!page) return;
+    page.setAttribute('data-wired', '1');
 
     // ---------- the settings of every script ----------
     // path: where the value lives in the script (its own variable, then the keys inside it); def: the script's default.
@@ -129,15 +162,15 @@
                 desc: 'Which line "Ends at" goes to.' });
         f.push(
             { path: prefix + '.UI_CRITICSRATING_ICON_FRESH', label: 'Fresh Icon', type: 'bool', def: true, desc: 'Shows Jellyfin\'s critic rating with the fresh tomato from a set score.' },
-            { path: prefix + '.UI_CRITICSRATING_ICON_FRESH_SCORE', label: 'Fresh Score', type: 'number', def: 6.0, min: 0, max: 10, step: 0.1, desc: 'The lowest score (0 to 10) that shows the fresh tomato.' },
+            { path: prefix + '.UI_CRITICSRATING_ICON_FRESH_SCORE', label: 'Fresh Score', type: 'number', def: 6.0, min: 0, max: 10, step: 0.1, desc: 'The lowest score from 0 to 10 that shows the fresh tomato.' },
             { path: prefix + '.UI_CRITICSRATING_ICON_CERTIFIED', label: 'Certified Icon', type: 'bool', def: true, desc: 'Shows Jellyfin\'s critic rating with the certified icon from a set score.' },
-            { path: prefix + '.UI_CRITICSRATING_ICON_CERTIFIED_SCORE', label: 'Certified Score', type: 'number', def: 9.0, min: 0, max: 10, step: 0.1, desc: 'The lowest score (0 to 10) that shows the certified icon.' },
+            { path: prefix + '.UI_CRITICSRATING_ICON_CERTIFIED_SCORE', label: 'Certified Score', type: 'number', def: 9.0, min: 0, max: 10, step: 0.1, desc: 'The lowest score from 0 to 10 that shows the certified icon.' },
             { path: prefix + '.UI_RT_ICON_CERTIFIED', label: 'Rotten Tomatoes Certified', type: 'bool', def: true, desc: 'Shows the Rotten Tomatoes rating from MDBList with the certified icon from a set score.' },
-            { path: prefix + '.UI_RT_ICON_CERTIFIED_SCORE', label: 'Rotten Tomatoes Certified Score', type: 'number', def: 9.0, min: 0, max: 10, step: 0.1, desc: 'The lowest score (0 to 10) that shows the certified icon.' },
-            { path: prefix + '.LIMIT_MAX_RATINGS', label: 'Maximum Ratings', type: 'number', def: 6, min: 0, max: 11, step: 1, desc: 'How many MDBList ratings are shown at most; 0 shows all.' },
+            { path: prefix + '.UI_RT_ICON_CERTIFIED_SCORE', label: 'Rotten Tomatoes Certified Score', type: 'number', def: 9.0, min: 0, max: 10, step: 0.1, desc: 'The lowest score from 0 to 10 that shows the certified icon.' },
+            { path: prefix + '.LIMIT_MAX_RATINGS', label: 'Maximum Ratings', type: 'number', def: 6, min: 0, max: 11, step: 1, desc: 'How many MDBList ratings are shown at most, 0 for all.' },
             { path: prefix + '.SOURCE_ORDER', label: 'Sources', type: 'order', def: RATINGS_SOURCES.map(function (s) { return s[1]; }),
                 items: RATINGS_SOURCES.map(function (s) { return [s[1], s[2], prefix + '.SOURCES.' + s[0] + '.enabled']; }),
-                desc: 'The MDBList ratings in the order they are shown; a source without a tick is left out.' });
+                desc: 'The MDBList ratings in their order, without the sources that have no tick.' });
         return f;
     }
 
@@ -168,7 +201,7 @@
                 { path: prefix + '.centerHoverOnly', label: 'Center Only', type: 'bool', def: true, desc: 'Opens only while the mouse rests over the center of the card.' },
                 { path: prefix + '.centerHoverOnlyDelay', label: 'Center Delay', type: 'number', def: 1500, min: 0, step: 50, unit: 'ms', desc: 'How long the mouse rests over the center before the preview opens.' },
                 { path: prefix + '.hoverDelay', label: 'Hover Delay', type: 'number', def: 220, min: 0, step: 10, unit: 'ms', desc: 'How long the mouse rests on the card before the preview opens, when the whole card counts.' },
-                { path: prefix + '.maxPosters', label: 'Maximum Tiles', type: 'number', def: t.maxPosters, min: 1, step: 1, desc: 'How many tiles are shown; the rest is counted as "+N".' },
+                { path: prefix + '.maxPosters', label: 'Maximum Tiles', type: 'number', def: t.maxPosters, min: 1, step: 1, desc: 'How many tiles are shown before the rest is counted as +N.' },
                 { path: prefix + '.subtileFocusPlayButton', label: 'Play Button on Tiles', type: 'bool', def: true, desc: 'Shows a play button on the tile under the mouse.' }
             ];
             if (t.sort) basic.push(
@@ -205,7 +238,7 @@
                 { path: prefix + '.staggerMs', label: 'Stagger', type: 'number', def: 28, min: 0, step: 1, unit: 'ms', desc: 'The delay between the tiles as they open.' },
                 { path: prefix + '.closeMs', label: 'Closing', type: 'number', def: 220, min: 0, step: 10, unit: 'ms', desc: 'How long the fan takes to close.' });
             if (t.scrollSettle) advanced.push({ path: prefix + '.scrollSettleMs', label: 'After Scrolling', type: 'number', def: 160, min: 0, step: 10, unit: 'ms',
-                desc: 'How long the page must rest after scrolling before a preview opens; one value for all card types.' });
+                desc: 'How long the page must rest after scrolling before a preview opens, for all card types.' });
             if (t.centerArea) advanced.push({ path: prefix + '.centerHoverZoneRatio', label: 'Center Area', type: 'number', def: 0.22, min: 0.05, max: 1, step: 0.01,
                 desc: 'The size of the center area, as a fraction of the card, for cards without a play button.' });
             advanced.push(
@@ -219,7 +252,7 @@
     }
 
     var SCHEMA = [
-        { script: 'random', tab: 'Random', title: 'Random Button Extended', desc: 'A die in the header opens a random title of the library you are in; a double-click starts auto mode, a triple-click changes its interval.',
+        { script: 'random', tab: 'Random', title: 'Random Button Extended', desc: 'A die in the header opens a random title of the library you are in.',
             header: 'random',
             sections: [
                 { title: 'Libraries', fields: [
@@ -230,31 +263,31 @@
                     { path: 'HOME2_PARENT_ID', label: 'Home Videos 2', type: 'library', collection: 'homevideos', def: '', desc: 'A second home video library the die picks from.' }] },
                 { title: 'Auto Mode', fields: [
                     { path: 'timerStates', label: 'Intervals', type: 'numberList', def: [3, 6, 12, 24, 48], min: 1, unit: 's', desc: 'The intervals a triple-click steps through, in seconds, separated by commas.' },
-                    { path: 'defaultTimer', label: 'Starting Interval', type: 'number', def: 24, min: 1, step: 1, unit: 's', desc: 'The interval after the page loads; it should be one of the intervals above.' }] }
+                    { path: 'defaultTimer', label: 'Starting Interval', type: 'number', def: 24, min: 1, step: 1, unit: 's', desc: 'The interval after the page loads, best one of the intervals above.' }] }
             ] },
-        { script: 'autoscroll', tab: 'Autoscroll', title: 'Autoscroll Button', desc: 'A header button scrolls the page down slowly and starts again at the top; a double-click changes the speed, a triple-click the pause at the top.',
+        { script: 'autoscroll', tab: 'Autoscroll', title: 'Autoscroll Button', desc: 'A header button scrolls the page down slowly and starts again at the top.',
             header: 'autoscroll',
             sections: [{ title: 'Scrolling', fields: [
                 { path: 'speeds', label: 'Speeds', type: 'numberList', def: [0.03, 0.06, 0.2], count: 3, min: 0.001, desc: 'Three speeds, slow to fast, separated by commas.' },
                 { path: 'speedStart', label: 'Starting Speed', type: 'select', def: 1, options: [[1, 'Speed 1'], [2, 'Speed 2'], [3, 'Speed 3']], desc: 'The speed after the page loads.' },
                 { path: 'delayStates', label: 'Pauses at the Top', type: 'numberList', def: [0, 1, 3, 5, 10], min: 0, unit: 's', desc: 'The pauses a triple-click steps through, in seconds, separated by commas.' },
-                { path: 'delayStart', label: 'Starting Pause', type: 'number', def: 1, min: 1, step: 1, desc: 'The pause used after the page loads, by its position in the list above (1 = first).' },
+                { path: 'delayStart', label: 'Starting Pause', type: 'number', def: 1, min: 1, step: 1, desc: 'The pause after the page loads, by its place in the list above, 1 for the first.' },
                 { path: 'bottomDelay', label: 'Pause at the Bottom', type: 'number', def: 3000, min: 0, step: 100, unit: 'ms', desc: 'How long it waits at the bottom before it starts again at the top.' }] }] },
         { script: 'fullscreen', tab: 'Fullscreen', title: 'Fullscreen Button', desc: 'A header button switches the browser to fullscreen and back, like F11.', header: 'fullscreen', sections: [] },
         { script: 'detailsGroupItemsExtended', tab: 'Details', title: 'Details Group Items Extended', desc: 'Country, awards and box office from OMDb in the details block of movies and series.',
             sections: [
                 { title: 'OMDb', fields: [
-                    { path: 'OMDB_API_KEY', label: 'OMDb API Key', type: 'secret', def: '', desc: 'Your key from omdbapi.com. Like any key a browser script uses, it is sent to every signed-in user.' }] },
+                    { path: 'OMDB_API_KEY', label: 'OMDb API Key', type: 'secret', def: '', desc: 'Your omdbapi.com key, sent to every signed-in user like any key a browser script uses.' }] },
                 { title: 'Movies', fields: [
                     { path: 'SETTINGS.movies.rowOrder', label: 'Rows', type: 'order', def: ['country', 'awards', 'boxoffice'],
                         items: [['country', 'Country', 'SETTINGS.movies.enableCountry'], ['awards', 'Awards', 'SETTINGS.movies.enableAwards'], ['boxoffice', 'Box Office', 'SETTINGS.movies.enableBoxOffice']],
-                        desc: 'The rows in their order; a row without a tick is left out.' },
+                        desc: 'The rows in their order, without the rows that have no tick.' },
                     { path: 'SETTINGS.movies.awardsLinkSourceMovies', label: 'Awards Link', type: 'select', def: 'imdb', options: [['imdb', 'IMDb'], ['tmdb', 'TMDb']], desc: 'Where the awards link opens.' },
                     { path: 'SETTINGS.movies.enableClickableLink', label: 'Links', type: 'bool', def: true, desc: 'Makes the rows links.' }] },
                 { title: 'Series', fields: [
                     { path: 'SETTINGS.tvShows.rowOrder', label: 'Rows', type: 'order', def: ['country', 'awards'],
                         items: [['country', 'Country', 'SETTINGS.tvShows.enableCountry'], ['awards', 'Awards', 'SETTINGS.tvShows.enableAwards']],
-                        desc: 'The rows in their order; a row without a tick is left out.' },
+                        desc: 'The rows in their order, without the rows that have no tick.' },
                     { path: 'SETTINGS.tvShows.enableClickableLink', label: 'Links', type: 'bool', def: true, desc: 'Makes the rows links.' }] },
                 { title: 'Labels', fields: [
                     { path: 'SETTINGS.labels.country', label: 'Country', type: 'text', def: 'Country', desc: 'The label in front of the country.' },
@@ -266,13 +299,13 @@
                 { path: 'CONFIG.labelText', label: 'Label', type: 'text', def: 'Collection', desc: 'The label in front of the collection name.' },
                 { path: 'CONFIG.position', label: 'Position', type: 'select', def: 'top', options: [['top', 'First'], ['after', 'After a Row'], ['end', 'Last']], desc: 'Where the row appears in the block.' },
                 { path: 'CONFIG.afterLabel', label: 'After', type: 'select', def: 'Studio', options: opts(['Genres', 'Director', 'Writer', 'Studio', 'Country', 'Awards', 'Box Office']),
-                    desc: 'The row it follows with "After a Row"; Country, Awards and Box Office need Details Group Items Extended.' },
-                { path: 'CONFIG.enablePhraseParser', label: 'Rename Words', type: 'bool', def: false, desc: 'Replaces words in collection names; the metadata stays as it is.' },
+                    desc: 'The row it comes after, where Country, Awards and Box Office need Details Group Items Extended.' },
+                { path: 'CONFIG.enablePhraseParser', label: 'Rename Words', type: 'bool', def: false, desc: 'Replaces words in collection names on the page, not in the metadata.' },
                 { path: 'CONFIG.phraseParser', label: 'Replacements', type: 'pairs', def: [{ from: 'Filmreihe', to: 'Collection' }], desc: 'One per line: word = replacement.' }] }] },
         { script: 'mediaInfoRatings', tab: 'Ratings', title: 'MediaInfo Ratings Enhanced', desc: 'Ratings from up to eleven sources by MDBList in the media info line of movies and series.',
             sections: [
                 { title: 'MDBList', fields: [
-                    { path: 'CONFIG_GLOBAL.API_KEY', label: 'MDBList API Key', type: 'secret', def: '', desc: 'Your key from mdblist.com. Like any key a browser script uses, it is sent to every signed-in user.' },
+                    { path: 'CONFIG_GLOBAL.API_KEY', label: 'MDBList API Key', type: 'secret', def: '', desc: 'Your mdblist.com key, sent to every signed-in user like any key a browser script uses.' },
                     { path: 'CONFIG_GLOBAL.EXTRA_ROW_SPACE', label: 'Reserve Space', type: 'select', def: 'reserve', options: [['reserve', 'Always'], ['grow', 'When Ratings Arrive']],
                         desc: 'When the space for the ratings line is made.' },
                     { path: 'CONFIG_GLOBAL.CACHE.enabled', label: 'Cache Responses', type: 'bool', def: true, desc: 'Keeps MDBList responses for a while to save requests.' },
@@ -280,7 +313,7 @@
                 { title: 'Movies', fields: ratingsFields('CONFIG_MOVIE', true) },
                 { title: 'Series', fields: ratingsFields('CONFIG_SHOW', false) }
             ] },
-        { script: 'hoverPreviewTiles', tab: 'Hover Previews', title: 'Hover Preview Tiles Extended', desc: 'Resting the mouse on a card fans out its contents or chapters; a click opens or plays.', sections: hoverSections() },
+        { script: 'hoverPreviewTiles', tab: 'Hover Previews', title: 'Hover Preview Tiles Extended', desc: 'Resting the mouse on a card fans out its contents or chapters.', sections: hoverSections() },
         { script: 'keyboardLibraryNavigation', tab: 'Keyboard', title: 'Keyboard Library Navigation', desc: 'Type a command anywhere and press Enter to open, search, filter, sort or play.',
             sections: [{ title: 'Typing', fields: [
                 { path: 'CONFIG.idleResetMs', label: 'Clear After', type: 'number', def: 2500, min: 100, step: 100, unit: 'ms', desc: 'The typed text is cleared after this long without a key.' },
@@ -292,9 +325,43 @@
                     options: [['top-left', 'Top Left'], ['top-center', 'Top Center'], ['top-right', 'Top Right'], ['center-center', 'Center'], ['bottom-left', 'Bottom Left'], ['bottom-center', 'Bottom Center'], ['bottom-right', 'Bottom Right']],
                     desc: 'Where the typed text shows.' },
                 { path: 'CONFIG.indicatorOffsetX', label: 'Horizontal Offset', type: 'text', def: '0vw', desc: 'Extra horizontal offset, as a CSS length such as 2vw.' },
-                { path: 'CONFIG.indicatorOffsetY', label: 'Vertical Offset', type: 'text', def: '6vh', desc: 'Extra vertical offset, as a CSS length such as 6vh; positive values move it down.' },
+                { path: 'CONFIG.indicatorOffsetY', label: 'Vertical Offset', type: 'text', def: '6vh', desc: 'Extra vertical offset as a CSS length such as 6vh, positive values move it down.' },
                 { path: 'CONFIG.indicatorColor', label: 'Color', type: 'color', def: '#00ff41', desc: 'The color of the typed text.' }] }] }
     ];
+    // Fields that act only while another setting of the same script has a value (a tick by default); dimmed otherwise.
+    var DEPENDS = { mediaInfoRatings: { 'CONFIG_GLOBAL.CACHE.ttlMinutes': ['CONFIG_GLOBAL.CACHE.enabled'],
+        'CONFIG_MOVIE.ENDING_AT_POSITION_MODE': ['CONFIG_MOVIE.ENDING_AT_MODE'], 'CONFIG_MOVIE.ENDING_AT_LINE_MODE': ['CONFIG_MOVIE.ENDING_AT_MODE'] },
+        detailsGroupItemsSets: { 'CONFIG.afterLabel': ['CONFIG.position', 'after'], 'CONFIG.phraseParser': ['CONFIG.enablePhraseParser'] },
+        keyboardLibraryNavigation: { 'CONFIG.indicatorCorner': ['CONFIG.showIndicator'], 'CONFIG.indicatorOffsetX': ['CONFIG.showIndicator'],
+            'CONFIG.indicatorOffsetY': ['CONFIG.showIndicator'], 'CONFIG.indicatorColor': ['CONFIG.showIndicator'] },
+        hoverPreviewTiles: {} };
+    ['CONFIG_MOVIE', 'CONFIG_SHOW'].forEach(function (c) {
+        DEPENDS.mediaInfoRatings[c + '.UI_CRITICSRATING_ICON_FRESH_SCORE'] = [c + '.UI_CRITICSRATING_ICON_FRESH'];
+        DEPENDS.mediaInfoRatings[c + '.UI_CRITICSRATING_ICON_CERTIFIED_SCORE'] = [c + '.UI_CRITICSRATING_ICON_CERTIFIED'];
+        DEPENDS.mediaInfoRatings[c + '.UI_RT_ICON_CERTIFIED_SCORE'] = [c + '.UI_RT_ICON_CERTIFIED'];
+    });
+    HOVER_TYPES.forEach(function (t) {
+        var d = DEPENDS.hoverPreviewTiles, c = t.config;
+        d[c + '.centerHoverOnlyDelay'] = [c + '.centerHoverOnly'];
+        d[c + '.hoverDelay'] = [c + '.centerHoverOnly', false];
+        d[c + '.aspectRatioCandidates'] = [c + '.autoDetectAspectRatio'];
+        d[c + '.singleSeasonShowEpisodesInstead'] = [c + '.skipSingleSeason'];
+        ['folderSortBy', 'folderSortOrder', 'videoSortBy', 'videoSortOrder', 'mixedOrderMode'].forEach(function (k) { d[c + '.' + k] = [c + '.separateSortForFoldersAndVideos']; });
+        ['skipFolderLayerNames', 'skipFolderLayerExactMatchEnabled', 'skipFolderLayerFuzzyFallbackEnabled', 'maxFolderSkipDepth'].forEach(function (k) {
+            d[c + '.' + k] = [c + '.skipFolderLayerNamesEnabled'];
+        });
+    });
+    SCHEMA.forEach(function (p) {
+        var fields = [];
+        p.sections.forEach(function (s) { fields = fields.concat(s.fields); });
+        fields.forEach(function (f) {
+            var d = (DEPENDS[p.script] || {})[f.path];
+            if (!d) return;
+            var on = fields.filter(function (x) { return x.path === d[0]; })[0];
+            f.dep = { path: d[0], value: d.length > 1 ? d[1] : true, def: on.def };
+        });
+    });
+
     // The header buttons that can be sorted. A button with a plugin id comes from that plugin, to show whether it is installed.
     var HEADER_BUTTONS = [
         { key: 'random', name: 'Random' }, { key: 'autoscroll', name: 'Autoscroll' }, { key: 'fullscreen', name: 'Fullscreen' },
@@ -331,16 +398,18 @@
     }
 
     // ---------- drawing ----------
-    function row(label, control, desc, check) {
-        return '<div class="esRow' + (check ? ' esRowCheckbox' : '') + '"><label class="esRowLabel">' + esc(label) + '</label>'
-            + '<div class="esControl">' + control + '</div><div class="esDesc">' + esc(desc || '') + '</div></div>';
+    function row(label, control, desc, check, id, dep) {
+        return '<div class="esRow' + (check ? ' esRowCheckbox' : '') + '"' + (dep ? ' data-dep="' + esc(JSON.stringify(dep)) + '"' : '') + '>'
+            + '<label class="esRowLabel"' + (id ? ' for="' + id + '"' : '') + '>' + esc(label) + '</label>'
+            + '<div class="esControl">' + control + '</div>' + (check ? '' : '<div class="esDesc">' + esc(desc || '') + '</div>') + '</div>';
     }
+    function fieldId(script, f) { return 'es_' + script + '_' + f.path.replace(/\W/g, '_'); }
     function control(script, f) {
-        var id = 'es_' + script + '_' + f.path.replace(/\W/g, '_');
+        var id = fieldId(script, f);
         var v = get(script, f), a = ' id="' + id + '" data-script="' + script + '" data-path="' + esc(f.path) + '"';
         switch (f.type) {
             case 'bool':
-                return '<div class="esCheckLine"><input type="checkbox" class="esCheck"' + a + (v ? ' checked' : '') + '></div>';
+                return '<label class="esCheckLine"><input type="checkbox" class="esCheck"' + a + (v ? ' checked' : '') + '><span>' + esc(f.desc || '') + '</span></label>';
             case 'number':
                 return '<input type="text" inputmode="decimal" class="esNumber"' + a + ' value="' + esc(v) + '">' + (f.unit ? ' <span class="esUnit">' + esc(f.unit) + '</span>' : '');
             case 'text':
@@ -399,9 +468,9 @@
                 + '<button type="button" class="esTabButton" data-tab="' + t[0] + '">' + esc(t[1]) + '</button>';
         }).join('');
 
-        var html = '<div class="esTabPage" data-tabpage="general"><div class="esHeaderRow"><h3>General</h3></div>'
-            + '<p class="esTabDesc">Which additions run, and the order of the header buttons. Essentials needs the File Transformation plugin. '
-            + 'If JavaScript Injector runs copies of these scripts, turn them off there; those copies ignore the settings here.</p>'
+        var html = '<div class="esTabPage" data-tabpage="general"><div class="esHeaderRow"><h3>General</h3>'
+            + '<button type="button" class="esActionButton" data-restore="general">Restore defaults</button></div>'
+            + '<p class="esTabDesc">Which additions run and in which order the header buttons stand.</p>'
             + '<p class="esStatus esError" id="esInjectorWarning" hidden></p>'
             + '<div class="esSubheading">Additions</div>'
             + SCHEMA.map(function (p) {
@@ -409,25 +478,20 @@
                     + '<span>' + esc(p.desc) + '</span></label>', '', true);
             }).join('')
             + '<div class="esSubheading">Header Buttons</div>'
-            + row('Order', '<div class="esOrder" id="esHeaderOrder"></div>', 'Left to right; a button that is turned off or whose plugin is not installed is left out.')
-            + '<div class="esBox"><h3>Backup / Restore via Code</h3>'
-            + '<textarea id="esCodeBox" class="esCodeArea" placeholder="Click &quot;Generate&quot; to create a backup code, or paste a previously saved one here to restore it."></textarea>'
-            + '<div class="esButtonRow"><button type="button" class="esActionButton esBlue" id="esGenerate">Generate</button>'
-            + '<button type="button" class="esActionButton" id="esCopy" disabled>Copy to Clipboard</button>'
-            + '<button type="button" class="esActionButton esRed" id="esImport">Import</button>'
-            + '<button type="button" class="esActionButton esBlue" id="esSaveAll">Save All Settings</button></div>'
-            + '<div id="esCodeStatus" class="esStatus"></div></div>'
-            + '<div class="esBox esWarnBox"><div class="esWarnTitle">Restore All Defaults</div>'
-            + '<p class="esTabDesc">Turns every addition back on, restores the default header order and resets every setting on every tab.</p>'
-            + '<button type="button" class="esActionButton" id="esRestoreAll">Restore All</button></div></div>';
+            + row('Order', '<div class="esOrder" id="esHeaderOrder"></div>', 'Left to right, without the buttons that are turned off or not installed.')
+            + '<div class="esRestoreAllBox"><div class="esWarnTitle">Restore all tabs to script defaults</div>'
+            + '<div class="esWarnDesc">This resets every setting on every tab, not just General.</div>'
+            + '<button type="button" is="emby-button" id="esRestoreAll" class="block emby-button"><span>Restore all tabs</span></button></div></div>';
 
         SCHEMA.forEach(function (p) {
             html += '<div class="esTabPage" data-tabpage="' + p.script + '"><div class="esHeaderRow"><h3>' + esc(p.title) + '</h3>'
-                + (p.sections.length ? '<button type="button" class="esActionButton" data-restore="' + p.script + '">Restore Defaults</button>' : '') + '</div>'
+                + (p.sections.length ? '<button type="button" class="esActionButton" data-restore="' + p.script + '">Restore defaults</button>' : '') + '</div>'
                 + '<p class="esTabDesc">' + esc(p.desc) + '</p>';
-            if (!p.sections.length) html += '<p class="esTabDesc">No settings. Turn it on or off on the General tab.</p>';
+            if (!p.sections.length) html += '<p class="esTabDesc">It has no settings and is turned on or off on the General tab.</p>';
             p.sections.forEach(function (s, i) {
-                var body = s.fields.map(function (f) { return row(f.label, control(p.script, f), f.desc, f.type === 'bool'); }).join('');
+                var body = s.fields.map(function (f) {
+                    return row(f.label, control(p.script, f), f.desc, f.type === 'bool', f.type === 'order' ? '' : fieldId(p.script, f), f.dep);
+                }).join('');
                 if (s.advanced) {
                     var key = p.script + '_' + i;
                     html += '<div class="esCollapseHeader" data-collapse="' + key + '"><span class="esChevron">&#9654;</span><span>' + esc(s.title) + '</span></div>'
@@ -449,6 +513,14 @@
     function grayTabs() {
         page.querySelectorAll('.esTabButton').forEach(function (b) {
             b.classList.toggle('esTabGrayed', b.dataset.tab !== 'general' && enabled.indexOf(b.dataset.tab) < 0);
+        });
+        page.querySelectorAll('.esTabPage').forEach(function (t) {
+            t.classList.toggle('esTabLocked', t.dataset.tabpage !== 'general' && enabled.indexOf(t.dataset.tabpage) < 0);
+        });
+        page.querySelectorAll('[data-dep]').forEach(function (r) {
+            var dep = JSON.parse(r.dataset.dep), script = r.closest('.esTabPage').dataset.tabpage;
+            var on = same(get(script, { path: dep.path, def: dep.def }), dep.value === undefined ? true : dep.value);
+            r.classList.toggle('esFieldDisabled', !on);
         });
     }
     function showTab(key) {
@@ -505,6 +577,7 @@
             readOrder(el.closest('[data-order]'));
         } else if (el.dataset.path) {
             readField(el);
+            grayTabs();
         }
     });
     page.addEventListener('click', function (e) {
@@ -529,6 +602,11 @@
             if (j >= 0 && j < headerOrder.length) { headerOrder.splice(i, 1); headerOrder.splice(j, 0, key); drawHeaderOrder(); }
             return;
         }
+        if (t.dataset.restore === 'general') {
+            enabled = SCHEMA.map(function (p) { return p.script; });
+            headerOrder = HEADER_BUTTONS.map(function (b) { return b.key; });
+            drawTabs(); showTab('general'); return;
+        }
         if (t.dataset.restore) { values[t.dataset.restore] = {}; drawTabs(); showTab(t.dataset.restore); return; }
         if (t.id === 'esRestoreAll') {
             values = {};
@@ -537,27 +615,56 @@
             drawTabs(); showTab('general'); return;
         }
         if (t.id === 'esGenerate') {
-            $('esCodeBox').value = btoa(unescape(encodeURIComponent(JSON.stringify({ EnabledScripts: enabled, HeaderOrder: headerOrder, Settings: values }))));
+            $('esCodeBox').value = btoa(unescape(encodeURIComponent(JSON.stringify({ EnabledScripts: enabled, HeaderOrder: headerOrder, Settings: withoutKeys(values) }))));
             $('esCopy').disabled = false;
-            status('Code generated.', true); return;
+            status('Code generated (API keys not included) - copy (Ctrl+C), or use the Copy to clipboard button', true); return;
         }
         if (t.id === 'esCopy') {
             var text = $('esCodeBox').value;
-            if (navigator.clipboard) navigator.clipboard.writeText(text).then(function () { status('Copied to clipboard.', true); }, function () { $('esCodeBox').select(); });
-            else $('esCodeBox').select();
+            var manual = function () { $('esCodeBox').select(); status('Copying failed - the code is selected, press Ctrl+C.', false); };
+            if (navigator.clipboard) navigator.clipboard.writeText(text).then(function () { status('Copied to clipboard!', true); }, manual);
+            else manual();
             return;
         }
         if (t.id === 'esImport') {
+            var code = $('esCodeBox').value.trim();
+            if (!code) { status('Paste a code first.', false); return; }
             try {
-                var data = JSON.parse(decodeURIComponent(escape(atob($('esCodeBox').value.trim()))));
-                apply(data);
+                var data = JSON.parse(decodeURIComponent(escape(atob(code))));
+                var keys = keysOf(values);
+                var applied = apply(data);
+                Object.keys(keys).forEach(function (script) { values[script] = values[script] || {}; Object.assign(values[script], keys[script]); });
                 drawTabs(); showTab('general');
-                status('Imported. Click "Save" to keep the settings.', true);
-            } catch (err) { status('The code could not be read.', false); }
+                status('Applied ' + applied + ' settings', true);
+            } catch (err) { status('Invalid code \u2014 it could not be read. Check that it was copied in full.', false); }
             return;
         }
-        if (t.id === 'esSaveAll') { $('EssentialsConfigForm').requestSubmit(); }
+        if (t.id === 'esSaveAll') {
+            status('Saved ' + (enabled.length + headerOrder.length + count(values)) + ' settings', true);
+            $('EssentialsConfigForm').requestSubmit();
+        }
     });
+    // The API keys stay out of the backup code, and an import keeps the keys already entered.
+    function isKey(script, path) { return allFields(script).some(function (f) { return f.path === path && f.type === 'secret'; }); }
+    function withoutKeys(all) {
+        var out = {};
+        Object.keys(all).forEach(function (script) {
+            Object.keys(all[script]).forEach(function (path) {
+                if (!isKey(script, path)) { out[script] = out[script] || {}; out[script][path] = all[script][path]; }
+            });
+        });
+        return out;
+    }
+    function keysOf(all) {
+        var out = {};
+        Object.keys(all).forEach(function (script) {
+            Object.keys(all[script]).forEach(function (path) {
+                if (isKey(script, path)) { out[script] = out[script] || {}; out[script][path] = all[script][path]; }
+            });
+        });
+        return out;
+    }
+    function count(all) { return Object.keys(all).reduce(function (n, k) { return n + Object.keys(all[k]).length; }, 0); }
     function status(text, ok) {
         var s = $('esCodeStatus');
         s.textContent = text;
@@ -601,21 +708,22 @@
                 if (f && valid(f, settings[script][path])) { values[script] = values[script] || {}; values[script][path] = settings[script][path]; }
             });
         });
+        return enabled.length + headerOrder.length + count(values);
     }
 
-    // The global flag each script sets so it runs only once; found in a JavaScript Injector entry, it shows that entry
-    // runs a copy of that script. The same flags are in essentials.js, keep both lists in step.
-    var LOAD_FLAGS = {
-        random: '__jfRandomButton', autoscroll: '__jfAutoscrollButton', fullscreen: '__jfFullscreenButton',
-        detailsGroupItemsExtended: '__jfDetailsGroupItemsExtended', detailsGroupItemsSets: '__jfDetailsGroupItemsSets',
-        mediaInfoRatings: '__jfMediaInfoRatings', hoverPreviewTiles: '__jfCollectionPreviewLoaded', keyboardLibraryNavigation: '__jfKeyboardLibraryNav'
+    // A text every version of each script carries; found in an enabled JavaScript Injector entry, it shows that entry
+    // runs a copy of that script, old copies included.
+    var SCRIPT_SIGNS = {
+        random: 'randomMovieButton', autoscroll: 'jf-scroll-btn', fullscreen: 'jf-fullscreen-btn',
+        detailsGroupItemsExtended: 'data-omdb-row', detailsGroupItemsSets: 'data-collection-row',
+        mediaInfoRatings: 'MDBListRatings', hoverPreviewTiles: '__jfCollectionPreviewLoaded', keyboardLibraryNavigation: '__jfKeyboardLibraryNav'
     };
     function warnInjector(plugins) {
         var injector = plugins.filter(function (p) { return /JavaScript Injector/i.test(p.Name) && p.Status === 'Active'; })[0];
         if (!injector) return;
         ApiClient.getPluginConfiguration(injector.Id).then(function (c) {
             var found = (c.CustomJavaScripts || []).filter(function (s) { return s.Enabled; }).map(function (s) {
-                var copy = SCHEMA.filter(function (p) { return (s.Script || '').indexOf(LOAD_FLAGS[p.script]) >= 0; })[0];
+                var copy = SCHEMA.filter(function (p) { return (s.Script || '').indexOf(SCRIPT_SIGNS[p.script]) >= 0; })[0];
                 return copy ? s.Name + ' (' + copy.title + ')' : null;
             }).filter(Boolean);
             var box = $('esInjectorWarning');

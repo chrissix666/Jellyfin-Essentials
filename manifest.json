@@ -13,16 +13,16 @@
         "changelog": "Release for Jellyfin 12.0+",
         "targetAbi": "12.0.0.0",
         "sourceUrl": "https://github.com/chrissix666/Jellyfin-Essentials/releases/download/v2.0.0.0/Essentials_2.0.0.0_jellyfin-12.x.zip",
-        "checksum": "126a103aa199f45e1e5f260210192d87",
-        "timestamp": "2026-11-12T14:35:38Z"
+        "checksum": "3b14740a119a7af05d76cf23d2e98949",
+        "timestamp": "2026-11-12T15:01:42Z"
       },
       {
         "version": "1.0.0.0",
         "changelog": "Release for Jellyfin 10.10.7",
         "targetAbi": "10.10.7.0",
         "sourceUrl": "https://github.com/chrissix666/Jellyfin-Essentials/releases/download/v1.0.0.0/Essentials_1.0.0.0_jellyfin-10.10.7.zip",
-        "checksum": "016b0bf7b6a15f036bb78ac4120ba669",
-        "timestamp": "2026-11-12T14:35:38Z"
+        "checksum": "030b52d5b4e5677154e0233f333b4961",
+        "timestamp": "2026-11-12T15:01:42Z"
       }
     ]
   }
