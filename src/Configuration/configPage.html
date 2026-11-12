@@ -257,6 +257,7 @@
             sections: [
                 { title: 'Libraries', fields: [
                     { path: 'MOVIES_PARENT_ID', label: 'Movies', type: 'library', collection: 'movies', def: '', desc: 'The movie library the die picks from.' },
+                    { path: 'GAMES_PARENT_ID', label: 'Games', type: 'library', collection: 'movies', pluginId: '59d303d7-b936-4c4b-81a7-e69b2b27d6b6', def: '', desc: 'The Playnite Bridge games library the die picks from; it is a Movies library.' },
                     { path: 'TVSHOWS_PARENT_ID', label: 'Shows', type: 'library', collection: 'tvshows', def: '', desc: 'The show library the die picks from.' },
                     { path: 'COLLECTIONS_PARENT_ID', label: 'Collections', type: 'library', collection: 'boxsets', def: '', desc: 'The collection library the die picks from.' },
                     { path: 'HOME1_PARENT_ID', label: 'Home Videos 1', type: 'library', collection: 'homevideos', def: '', desc: 'A home video library the die picks from.' },
@@ -490,6 +491,7 @@
             if (!p.sections.length) html += '<p class="esTabDesc">It has no settings and is turned on or off on the General tab.</p>';
             p.sections.forEach(function (s, i) {
                 var body = s.fields.map(function (f) {
+                    if (f.pluginId && !installed[plainId(f.pluginId)]) return '';
                     return row(f.label, control(p.script, f), f.desc, f.type === 'bool', f.type === 'order' ? '' : fieldId(p.script, f), f.dep);
                 }).join('');
                 if (s.advanced) {
