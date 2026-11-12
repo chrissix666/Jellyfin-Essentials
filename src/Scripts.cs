@@ -31,8 +31,8 @@ public static class Scripts
         new("autoscroll", "jf-scroll-btn"),
         new("fullscreen", "jf-fullscreen-btn"),
         new("globe", "jf-globe-btn"),
-        new("cinema", "jf-cinema-btn"),
-        new("destroy", "jf-destroy-btn")
+        new("destroy", "jf-destroy-btn"),
+        new("cinema", "jf-cinema-btn")
     };
 
     /// <summary>The address the browser loads a script from: jsDelivr, or in a test build the plugin itself.</summary>

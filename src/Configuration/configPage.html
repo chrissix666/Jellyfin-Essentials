@@ -366,8 +366,8 @@
     var HEADER_BUTTONS = [
         { key: 'random', name: 'Random' }, { key: 'autoscroll', name: 'Autoscroll' }, { key: 'fullscreen', name: 'Fullscreen' },
         { key: 'globe', name: 'Globe', pluginId: 'b37f9bfa-5337-424d-adbc-114488b2190d' },
-        { key: 'cinema', name: 'Cinema Project', pluginId: 'a6e6b7d2-2f6a-4c7e-9c1a-6d1e3f9b8a11' },
-        { key: 'destroy', name: 'Destroy', pluginId: '9332385a-9eeb-4410-a224-b699c4e3098b' }];
+        { key: 'destroy', name: 'Destroy', pluginId: '9332385a-9eeb-4410-a224-b699c4e3098b' },
+        { key: 'cinema', name: 'Cinema Project', pluginId: 'a6e6b7d2-2f6a-4c7e-9c1a-6d1e3f9b8a11' }];
 
     // ---------- state ----------
     var values = {};          // script -> path -> value (only what differs from the default is saved)
@@ -711,12 +711,13 @@
         return enabled.length + headerOrder.length + count(values);
     }
 
-    // A text every version of each script carries; found in an enabled JavaScript Injector entry, it shows that entry
-    // runs a copy of that script, old copies included.
+    // A text every version of each script carries and no other script does (the three header scripts all name each
+    // other's button ids in their order list); found in an enabled JavaScript Injector entry, it shows that entry runs a
+    // copy of that script, old copies included.
     var SCRIPT_SIGNS = {
-        random: 'randomMovieButton', autoscroll: 'jf-scroll-btn', fullscreen: 'jf-fullscreen-btn',
+        random: 'random-movie-button-custom-css', autoscroll: "BUTTON_ID = 'jf-scroll-btn'", fullscreen: "BUTTON_ID = 'jf-fullscreen-btn'",
         detailsGroupItemsExtended: 'data-omdb-row', detailsGroupItemsSets: 'data-collection-row',
-        mediaInfoRatings: 'MDBListRatings', hoverPreviewTiles: '__jfCollectionPreviewLoaded', keyboardLibraryNavigation: '__jfKeyboardLibraryNav'
+        mediaInfoRatings: 'MDBListRatings', hoverPreviewTiles: '__jfCollectionPreviewLoaded', keyboardLibraryNavigation: 'PERSON_MEDIA_TYPE_KEYWORDS'
     };
     function warnInjector(plugins) {
         var injector = plugins.filter(function (p) { return /JavaScript Injector/i.test(p.Name) && p.Status === 'Active'; })[0];
@@ -727,9 +728,9 @@
                 return copy ? s.Name + ' (' + copy.title + ')' : null;
             }).filter(Boolean);
             var box = $('esInjectorWarning');
-            if (box && found.length) {
-                box.textContent = 'JavaScript Injector still runs ' + found.join(', ') + '. Turn these entries off; they ignore the settings here.';
-                box.hidden = false;
+            if (box) {
+                box.textContent = found.length ? 'JavaScript Injector still runs ' + found.join(', ') + '. Turn these entries off; they ignore the settings here.' : '';
+                box.hidden = !found.length;
             }
         }, function () {});
     }
